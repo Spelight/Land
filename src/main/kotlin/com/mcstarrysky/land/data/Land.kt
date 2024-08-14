@@ -14,6 +14,8 @@ import com.mcstarrysky.land.util.*
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.Transient
 import kotlinx.serialization.encodeToString
+import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer
+import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer
 import org.bukkit.Bukkit
 import org.bukkit.Chunk
 import org.bukkit.Location
@@ -23,8 +25,6 @@ import taboolib.common.platform.function.adaptPlayer
 import taboolib.common5.cbool
 import taboolib.module.chat.Components
 import taboolib.platform.util.checkItem
-import taboolib.platform.util.countItem
-import taboolib.platform.util.hoverItem
 import taboolib.platform.util.takeItem
 import java.util.Date
 import java.util.HashMap
@@ -90,9 +90,13 @@ data class Land(
             area += location.chunk
             player.prettyInfo("占领区块成功!")
         } else {
-            cacheMessageWithPrefix("抱歉, 你要准备 3 个 ")
-                .append(Components.text("&b开拓水晶").hoverItem(Land.crystal))
-                .append(cacheMessageWithPrefixColor(" 才能占领一个区块"))
+            // 这里用到一个奇怪的操作
+            Components.parseRaw(
+                GsonComponentSerializer.gson()
+                    .serialize(GsonComponentSerializer.gson().deserialize(cacheMessageWithPrefix("抱歉, 你要准备 3 个").toRawMessage())
+                        .append(LegacyComponentSerializer.legacyAmpersand().deserialize("&b开拓水晶")
+                            .hoverEvent(Land.crystal.clone().asHoverEvent())))
+            ).append(cacheMessageWithPrefixColor(" 才能占领一个区块"))
                 .sendTo(adaptPlayer(player))
         }
     }

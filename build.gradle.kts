@@ -11,18 +11,30 @@ plugins {
 taboolib {
     env {
         // 安装模块
-        install(UNIVERSAL, BUKKIT, BUKKIT_UTIL, BUKKIT_XSERIES, UI, NMS)
+        install(
+            "minecraft-chat",
+            "basic-configuration",
+            "bukkit-util",
+            "bukkit-xseries",
+            "bukkit-xseries-item",
+            "bukkit-xseries-skull",
+            "bukkit-ui",
+            "platform-bukkit"
+        )
+        repoTabooLib = "http://mcstarrysky.com:8081/repository/releases/"
     }
-    version { taboolib = "6.1.2-beta10" }
+    version { taboolib = "6.2.0-beta5-dev" }
 }
 
 repositories {
+    maven("http://mcstarrysky.com:8081/repository/releases/") {
+        isAllowInsecureProtocol = true
+    }
     mavenCentral()
     maven("https://repo.papermc.io/repository/maven-public/")
 }
 
 dependencies {
-    compileOnly("com.mojang:authlib:1.5.25")
     compileOnly("io.papermc.paper:paper-api:1.20.4-R0.1-SNAPSHOT")
     compileOnly(kotlin("stdlib"))
     compileOnly(fileTree("libs"))
