@@ -73,6 +73,11 @@ data class Land(
         PermTeleport.teleport(player, this)
     }
 
+    fun isAdmin(player: Player): Boolean {
+        // 判断 Op 为了我可以神权
+        return player.isOp || owner == player.uniqueId
+    }
+
     fun hasPermission(player: Player, perm: Permission? = null): Boolean {
         return if (perm == null) {
             player.isOp || player.uniqueId == owner || users[player.uniqueId]?.get(PermAdmin.id) == true

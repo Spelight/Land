@@ -3,6 +3,7 @@ package com.mcstarrysky.land.flag
 import com.mcstarrysky.land.data.Land
 import com.mcstarrysky.land.manager.LandManager
 import com.mcstarrysky.land.util.registerPermission
+import org.bukkit.OfflinePlayer
 import org.bukkit.entity.Animals
 import org.bukkit.event.entity.EntitySpawnEvent
 import org.bukkit.inventory.ItemFlag
@@ -20,8 +21,7 @@ import taboolib.platform.util.buildItem
  * @author HXS
  * @since 2024/8/14 15:23
  */
-@TListener
-object PermAnimalsSpawn : Permission{
+object PermAnimalsSpawn : Permission {
 
     @Awake(LifeCycle.ENABLE)
     private fun init() {
@@ -40,8 +40,8 @@ object PermAnimalsSpawn : Permission{
     override val playerSide: Boolean
         get() = true
 
-    override fun generateMenuItem(land: Land, player: Player?): ItemStack {
-        return buildItem(XMaterial.SHEEP_SPAWN_EGG){
+    override fun generateMenuItem(land: Land, player: OfflinePlayer?): ItemStack {
+        return buildItem(XMaterial.SHEEP_SPAWN_EGG) {
             name = "&f动物产生 ${flagValue(land, player)}"
             lore += listOf(
                 "&7允许行为:",
@@ -57,11 +57,11 @@ object PermAnimalsSpawn : Permission{
 
     @SubscribeEvent(ignoreCancelled = true)
     fun e(e: EntitySpawnEvent) {
-        if (e.entity !is Animals){
+        if (e.entity !is Animals) {
             return
         }
         LandManager.getLand(e.entity.location)?.run {
-            if (!getFlag(this@PermMobSpawn.id)) {
+            if (!getFlag(this@PermAnimalsSpawn.id)) {
                 e.isCancelled = true
             }
         }

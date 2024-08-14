@@ -255,7 +255,7 @@ object LandInfoMenu {
     }
 
     private fun check(player: Player, land: Land): Boolean {
-        if (!land.hasPermission(player)) {
+        if (!land.isAdmin(player)) {
             player.closeInventory()
             player.prettyInfo("你没有权限修改这个领地的内容!")
             return false
