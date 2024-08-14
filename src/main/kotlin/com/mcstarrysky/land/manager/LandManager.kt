@@ -124,6 +124,7 @@ object LandManager {
             area = area.toMutableList(),
             tpLocation = clickedLocation.add(0.0, 1.0, 0.0),
             cooperators = mutableListOf(),
+            users = mutableMapOf()
         )
         for ((flag, value) in defaultFlags) {
             player.prettyInfo("自动添加标记 [{0}](color=#8abcd1) &7\\(值: {1}\\)", flag, value)

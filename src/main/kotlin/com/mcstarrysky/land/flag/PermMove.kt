@@ -4,6 +4,7 @@ import com.mcstarrysky.land.data.Land
 import com.mcstarrysky.land.manager.LandManager
 import com.mcstarrysky.land.util.*
 import org.bukkit.Location
+import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemFlag
 import org.bukkit.inventory.ItemStack
 import taboolib.common.LifeCycle
@@ -37,9 +38,9 @@ object PermMove : Permission {
     override val playerSide: Boolean
         get() = true
 
-    override fun generateMenuItem(land: Land): ItemStack {
+    override fun generateMenuItem(land: Land, player: Player?): ItemStack {
         return buildItem(XMaterial.IRON_BOOTS) {
-            name = "&f移动 ${land.getFlagOrNull(id).display}"
+            name = "&f移动 ${flagValue(land, player)}"
             lore += listOf(
                 "&7允许行为:",
                 "&8领地内移动",
@@ -47,21 +48,10 @@ object PermMove : Permission {
                 "&e左键修改值, 右键取消设置"
             )
             flags += ItemFlag.values().toList()
-            if (land.getFlagOrNull(id) == true) shiny()
+            if (land.getFlagValueOrNull(id) == true) shiny()
             colored()
         }
     }
-
-//    @SubscribeEvent(ignoreCancelled = true)
-//    fun e(e: PlayerMoveEvent) {
-//        LandManager.getLand(e.player.location)?.run {
-//            if (!hasPermission(e.player) && !getFlag(this@PermMove.id)) {
-//                e.player.velocity = VelocityUtils.calculateVelocity(e.player, e.to, e.from, 5.0)
-//                e.isCancelled = true
-//                e.player.prettyInfo("没有权限, 禁止移动&7\\(标记: ${this@PermMove.id}\\)")
-//            }
-//        }
-//    }
 
     @Schedule(period = 14L, async = true)
     fun tick() {

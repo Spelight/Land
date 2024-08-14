@@ -42,9 +42,9 @@ object PermDamageMonster : Permission{
     override val playerSide: Boolean
         get() = true
 
-        override fun generateMenuItem(land: Land): ItemStack {
+        override fun generateMenuItem(land: Land, player: Player?): ItemStack {
             return buildItem(XMaterial.GOLDEN_SWORD){
-                name = "&f攻击怪物 ${land.getFlagOrNull(id).display}"
+                name = "&f攻击怪物 ${flagValue(land, player)}"
                 lore += listOf(
                 "",
                 "&7允许行为:",
@@ -53,7 +53,7 @@ object PermDamageMonster : Permission{
                 "&e左键修改值, 右键取消设置"
             )
             flags += ItemFlag.values().toList()
-            if (land.getFlagOrNull(id) == true) shiny()
+            if (land.getFlagValueOrNull(id) == true) shiny()
             colored()
         }
     }
@@ -63,7 +63,7 @@ object PermDamageMonster : Permission{
         if (e.entity is Monster) {
             val player = e.damager as Player
             LandManager.getLand(e.entity.location)?.run {
-                if (!hasPermission(player) && !getFlag(this@PermDamageMonster.id)) {
+                if (!hasPermission(player, this@PermDamageMonster)) {
                     e.isCancelled = true
                     player.prettyInfo("没有权限, 禁止攻击怪物&7\\(标记: ${this@PermDamageMonster.id}\\)")
                 }

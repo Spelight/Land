@@ -77,7 +77,7 @@ data class Land(
         return if (perm == null) {
             player.isOp || player.uniqueId == owner || users[player.uniqueId]?.get(PermAdmin.id) == true
         } else {
-            users[player.uniqueId]?.get(perm.id) == true
+            users[player.uniqueId]?.get(perm.id) ?: getFlag(perm.id)
         }
     }
 
@@ -106,7 +106,7 @@ data class Land(
     /**
      * 适用于 UI 展示
      */
-    fun getFlagOrNull(flag: String): Boolean? {
+    fun getFlagValueOrNull(flag: String): Boolean? {
         return flags[flag]?.cbool
     }
 

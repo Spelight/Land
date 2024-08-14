@@ -8,7 +8,6 @@ import com.mcstarrysky.land.util.MenuRegistry.markHeader
 import com.mcstarrysky.land.util.MenuRegistry.markPageButton
 import org.bukkit.entity.Player
 import org.bukkit.event.inventory.ClickType
-import taboolib.common.util.sync
 import taboolib.module.ui.openMenu
 import taboolib.module.ui.type.PageableChest
 import java.util.function.Consumer
@@ -47,7 +46,7 @@ object LandFlagsMenu {
                 when (event.virtualEvent().clickType) {
                     ClickType.LEFT, ClickType.SHIFT_LEFT -> {
                         // 如果没设置, 就设置成默认值
-                        if (land.getFlagOrNull(flag.id) == null) {
+                        if (land.getFlagValueOrNull(flag.id) == null) {
                             land.setFlag(flag.id, flag.default)
                         } else {
                             val value = land.getFlag(flag.id)
@@ -56,7 +55,7 @@ object LandFlagsMenu {
                         openMenu(player, land, back, elements)
                     }
                     ClickType.RIGHT, ClickType.SHIFT_RIGHT -> {
-                        if (land.getFlagOrNull(flag.id) != null) {
+                        if (land.getFlagValueOrNull(flag.id) != null) {
                             land.setFlag(flag.id, null)
                             openMenu(player, land, back, elements)
                         }

@@ -2,13 +2,10 @@ package com.mcstarrysky.land.flag
 
 import com.mcstarrysky.land.data.Land
 import com.mcstarrysky.land.manager.LandManager
-import com.mcstarrysky.land.util.display
 import com.mcstarrysky.land.util.prettyInfo
 import com.mcstarrysky.land.util.registerPermission
 import org.bukkit.entity.Player
-import org.bukkit.event.block.Action
 import org.bukkit.event.inventory.InventoryOpenEvent
-import org.bukkit.event.player.PlayerInteractEvent
 import org.bukkit.inventory.ItemFlag
 import org.bukkit.inventory.ItemStack
 import taboolib.common.LifeCycle
@@ -43,9 +40,9 @@ object PermContainer : Permission {
     override val playerSide: Boolean
         get() = true
 
-    override fun generateMenuItem(land: Land): ItemStack {
+    override fun generateMenuItem(land: Land, player: Player?): ItemStack {
         return buildItem(XMaterial.CHEST) {
-            name = "&f容器 ${land.getFlagOrNull(id).display}"
+            name = "&f容器 ${flagValue(land, player)}"
             lore += listOf(
                 "&7允许行为:",
                 "&8打开容器",
@@ -53,7 +50,7 @@ object PermContainer : Permission {
                 "&e左键修改值, 右键取消设置"
             )
             flags += ItemFlag.values().toList()
-            if (land.getFlagOrNull(id) == true) shiny()
+            if (land.getFlagValueOrNull(id) == true) shiny()
             colored()
         }
     }
@@ -63,7 +60,7 @@ object PermContainer : Permission {
         if (e.inventory.location != null) {
             val player = e.player as? Player ?: return
             LandManager.getLand(e.inventory.location ?: return)?.run {
-                if (!hasPermission(player) && !getFlag(this@PermContainer.id)) {
+                if (!hasPermission(player, this@PermContainer)) {
                     e.isCancelled = true
                     player.prettyInfo("没有权限, 禁止使用容器&7\\(标记: ${this@PermContainer.id}\\)")
                 }

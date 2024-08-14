@@ -1,8 +1,8 @@
 package com.mcstarrysky.land.flag
 
 import com.mcstarrysky.land.data.Land
-import com.mcstarrysky.land.util.display
 import com.mcstarrysky.land.util.registerPermission
+import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
 import taboolib.common.LifeCycle
 import taboolib.common.platform.Awake
@@ -30,21 +30,21 @@ object PermAdmin : Permission {
         get() = false
 
     override val worldSide: Boolean
-        get() = true
+        get() = false
 
     override val playerSide: Boolean
         get() = true
 
-    override fun generateMenuItem(land: Land): ItemStack {
+    override fun generateMenuItem(land: Land, player: Player?): ItemStack {
         return buildItem(XMaterial.COMMAND_BLOCK) {
-            name = "&f管理权力 ${land.getFlagOrNull(id).display}"
+            name = "&f管理权力 ${flagValue(land, player)}"
             lore += listOf(
                 "&7允许行为:",
                 "&8除管理领地与扩展领地外的所有权力",
                 "",
                 "&e左键修改值, 右键取消设置"
             )
-            if (land.getFlagOrNull(id) == true) shiny()
+            if (land.getFlagValueOrNull(id) == true) shiny()
             colored()
         }
     }

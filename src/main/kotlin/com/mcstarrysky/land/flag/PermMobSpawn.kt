@@ -2,10 +2,9 @@ package com.mcstarrysky.land.flag
 
 import com.mcstarrysky.land.data.Land
 import com.mcstarrysky.land.manager.LandManager
-import com.mcstarrysky.land.util.display
 import com.mcstarrysky.land.util.registerPermission
-import org.bukkit.entity.Mob
 import org.bukkit.entity.Monster
+import org.bukkit.entity.Player
 import org.bukkit.event.entity.EntitySpawnEvent
 import org.bukkit.inventory.ItemFlag
 import org.bukkit.inventory.ItemStack
@@ -41,9 +40,9 @@ object PermMobSpawn : Permission {
     override val playerSide: Boolean
         get() = true
 
-    override fun generateMenuItem(land: Land): ItemStack {
+    override fun generateMenuItem(land: Land, player: Player?): ItemStack {
         return buildItem(XMaterial.ZOMBIE_SPAWN_EGG) {
-            name = "&f怪物产生 ${land.getFlagOrNull(id).display}"
+            name = "&f怪物产生 ${flagValue(land, player)}"
             lore += listOf(
                 "&7允许行为:",
                 "&8生成怪物",
@@ -51,7 +50,7 @@ object PermMobSpawn : Permission {
                 "&e左键修改值, 右键取消设置"
             )
             flags += ItemFlag.values().toList()
-            if (land.getFlagOrNull(id) == true) shiny()
+            if (land.getFlagValueOrNull(id) == true) shiny()
             colored()
         }
     }

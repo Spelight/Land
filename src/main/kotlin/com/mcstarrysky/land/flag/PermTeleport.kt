@@ -1,7 +1,6 @@
 package com.mcstarrysky.land.flag
 
 import com.mcstarrysky.land.data.Land
-import com.mcstarrysky.land.util.display
 import com.mcstarrysky.land.util.prettyInfo
 import com.mcstarrysky.land.util.registerPermission
 import org.bukkit.entity.Player
@@ -34,22 +33,22 @@ object PermTeleport : Permission {
     override val playerSide: Boolean
         get() = true
 
-    override fun generateMenuItem(land: Land): ItemStack {
+    override fun generateMenuItem(land: Land, player: Player?): ItemStack {
         return buildItem(XMaterial.ENDER_PEARL) {
-            name = "&f传送 ${land.getFlagOrNull(id).display}"
+            name = "&f传送 ${flagValue(land, player)}"
             lore += listOf(
                 "&7允许行为:",
                 "&8传送到该领地",
                 "",
                 "&e左键修改值, 右键取消设置"
             )
-            if (land.getFlagOrNull(id) == true) shiny()
+            if (land.getFlagValueOrNull(id) == true) shiny()
             colored()
         }
     }
 
     fun teleport(player: Player, land: Land) {
-        if (land.getFlag(id) || land.hasPermission(player)) {
+        if (land.hasPermission(player, this)) {
             player.teleportAsync(land.tpLocation)
             player.prettyInfo("传送完成!")
         } else {

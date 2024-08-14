@@ -2,7 +2,6 @@ package com.mcstarrysky.land.flag
 
 import com.mcstarrysky.land.data.Land
 import com.mcstarrysky.land.manager.LandManager
-import com.mcstarrysky.land.util.display
 import com.mcstarrysky.land.util.prettyInfo
 import com.mcstarrysky.land.util.registerPermission
 import org.bukkit.entity.Animals
@@ -42,9 +41,9 @@ object PermDamageAnimals : Permission {
     override val playerSide: Boolean
         get() = true
 
-    override fun generateMenuItem(land: Land): ItemStack {
+    override fun generateMenuItem(land: Land, player: Player?): ItemStack {
         return buildItem(XMaterial.IRON_SWORD){
-            name = "&f攻击动物 ${land.getFlagOrNull(id).display}"
+            name = "&f攻击动物 ${flagValue(land, player)}"
             lore += listOf(
                 "&7允许行为:",
                 "&8对动物 (Animals) 造成伤害",
@@ -52,7 +51,7 @@ object PermDamageAnimals : Permission {
                 "&e左键修改值, 右键取消设置"
             )
             flags += ItemFlag.values().toList()
-            if (land.getFlagOrNull(id) == true) shiny()
+            if (land.getFlagValueOrNull(id) == true) shiny()
             colored()
         }
     }
@@ -62,7 +61,7 @@ object PermDamageAnimals : Permission {
         if (e.entity is Animals) {
             val player = e.damager as? Player ?: return
             LandManager.getLand(e.entity.location)?.run {
-                if (!hasPermission(player) && !getFlag(this@PermDamageAnimals.id)) {
+                if (!hasPermission(player, this@PermDamageAnimals)) {
                     e.isCancelled = true
                     player.prettyInfo("没有权限, 禁止攻击动物&7\\(标记: ${this@PermDamageAnimals.id}\\)")
                 }
