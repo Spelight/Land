@@ -6,9 +6,11 @@ import com.mcstarrysky.land.manager.LandManager
 import com.mcstarrysky.land.util.MenuRegistry
 import com.mcstarrysky.land.util.MenuRegistry.markHeader
 import com.mcstarrysky.land.util.MenuRegistry.markPageButton
+import org.bukkit.Material
 import org.bukkit.OfflinePlayer
 import org.bukkit.entity.Player
 import org.bukkit.event.inventory.ClickType
+import org.bukkit.inventory.ItemStack
 import taboolib.module.ui.openMenu
 import taboolib.module.ui.type.PageableChest
 import java.util.function.Consumer
@@ -35,9 +37,21 @@ object LandFlagsMenu {
             slotsBy('#')
 
             // TODO: filter
-            elements { LandManager.permissions }
+            elements {
+                LandManager.permissions.filter { if (other != null) it.playerSide else it.worldSide }.sortedBy { it.priority }.toMutableList()
+                    .also {
+                        if (!player.isOp) {
+                            it.removeAll(it.filter { it.adminSide == player.isOp })
+                        }
+                    }
+            }
 
-            onGenerate(async = true) { _, flag, _, _ -> flag.generateMenuItem(land, other) }
+            onGenerate(async = true) { _, flag, _, _ ->
+                if (flag.adminSide && !player.isOp) {
+                    return@onGenerate ItemStack(Material.BARRIER)
+                }
+                return@onGenerate flag.generateMenuItem(land, other)
+            }
 
             markHeader()
             markPageButton()

@@ -26,6 +26,9 @@ object PermAdmin : Permission {
     override val id: String
         get() = "admin"
 
+    override val priority: Int
+        get() = -1
+
     override val default: Boolean
         get() = false
 
