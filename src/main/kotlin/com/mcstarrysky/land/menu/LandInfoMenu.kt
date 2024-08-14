@@ -12,6 +12,7 @@ import com.mcstarrysky.land.util.prettyInfo
 import org.bukkit.Bukkit
 import org.bukkit.entity.Player
 import org.bukkit.event.inventory.ClickType
+import org.bukkit.inventory.ItemFlag
 import taboolib.library.xseries.XMaterial
 import taboolib.module.ui.openMenu
 import taboolib.module.ui.type.Chest
@@ -30,7 +31,7 @@ object LandInfoMenu {
 
     fun openMenu(player: Player, land: Land, back: Consumer<Player>?, elements: List<Land>) {
         player.openMenu<Chest>("领地(ID:${land.id}) ${land.name}") {
-            virtualize()
+            // virtualize()
 
 //            map(
 //                "b========",
@@ -44,15 +45,18 @@ object LandInfoMenu {
                 "b========",
                 "  a z f  ", // 描述, 加入, c欢送点
                 "  d g c  ", // 标记, 转让所有者, 退出
-                "  m z e  " //  玩家标记管理, 占领当前区块, 删除
+                "  m k e  ", //  玩家标记管理, 占领当前区块, 删除
+                "========="
             )
 
-            set('z', buildItem(XMaterial.NETHERITE_BOOTS) {
+            set('k', buildItem(XMaterial.NETHERITE_BOOTS) {
                 name = "&d占领脚下区块"
                 lore += listOf(
+                    "&7注意: 必须与领地现有范围相邻",
                     "&7需要花费 &b3 &7个开拓水晶"
                 )
                 colored()
+                flags += ItemFlag.values().toList()
             }) {
                 land.tryClaim(clicker)
             }
@@ -79,13 +83,15 @@ object LandInfoMenu {
                 colored()
             }) {
                 if (check(clicker, land)) {
-                    when (virtualEvent().clickType) {
+                    when (clickEvent().click) {
                         ClickType.LEFT, ClickType.SHIFT_LEFT -> {
                             clicker.closeInventory()
                             clicker.prettyInfo("请在聊天框输入新的描述, 或输入'取消'来取消操作!")
                             clicker.nextChat { ctx ->
-                                if (ctx == "取消")
+                                if (ctx == "取消") {
+                                    player.prettyInfo("操作已取消!")
                                     return@nextChat
+                                }
                                 land.description = ctx
                                 land.export()
                                 clicker.prettyInfo("修改成功!")
@@ -95,8 +101,10 @@ object LandInfoMenu {
                             clicker.closeInventory()
                             clicker.prettyInfo("请在聊天框输入新的名字, 或输入'取消'来取消操作!")
                             clicker.nextChat { ctx ->
-                                if (ctx == "取消")
+                                if (ctx == "取消") {
+                                    player.prettyInfo("操作已取消!")
                                     return@nextChat
+                                }
                                 if (!ctx.isValidLandName()) {
                                     clicker.prettyInfo("为避免与领地编号混淆, 名字不能是纯数字!")
                                     return@nextChat
@@ -127,13 +135,15 @@ object LandInfoMenu {
                 colored()
             }) {
                 if (!check(player, land)) return@set
-                when (virtualEvent().clickType) {
+                when (clickEvent().click) {
                     ClickType.LEFT, ClickType.SHIFT_LEFT -> {
                         clicker.closeInventory()
                         clicker.prettyInfo("请在聊天框输入新的进入信息, 支持行内复合文本. 输入'取消'来取消操作!")
                         clicker.nextChat { ctx ->
-                            if (ctx == "取消")
+                            if (ctx == "取消") {
+                                player.prettyInfo("操作已取消!")
                                 return@nextChat
+                            }
                             land.enterMessage = ctx
                             land.export()
                             clicker.prettyInfo("修改成功!")
@@ -161,13 +171,15 @@ object LandInfoMenu {
                 colored()
             }) {
                 if (!check(player, land)) return@set
-                when (virtualEvent().clickType) {
+                when (clickEvent().click) {
                     ClickType.LEFT, ClickType.SHIFT_LEFT -> {
                         clicker.closeInventory()
                         clicker.prettyInfo("请在聊天框输入新的离开信息, 支持行内复合文本. 输入'取消'来取消操作!")
                         clicker.nextChat { ctx ->
-                            if (ctx == "取消")
+                            if (ctx == "取消") {
+                                player.prettyInfo("操作已取消!")
                                 return@nextChat
+                            }
                             land.leaveMessage = ctx
                             land.export()
                             clicker.prettyInfo("修改成功!")
@@ -212,8 +224,10 @@ object LandInfoMenu {
                 clicker.closeInventory()
                 clicker.prettyInfo("请在聊天框输入新的玩家名, 或输入'取消'来取消操作!")
                 clicker.nextChat { ctx ->
-                    if (ctx == "取消")
+                    if (ctx == "取消") {
+                        player.prettyInfo("操作已取消!")
                         return@nextChat
+                    }
                     val offlinePlayer = Bukkit.getOfflinePlayerIfCached(ctx)
                     if (offlinePlayer == null) {
                         clicker.prettyInfo("并没有找到这位玩家!")
@@ -236,8 +250,10 @@ object LandInfoMenu {
                 clicker.closeInventory()
                 clicker.prettyInfo("你确定要删除吗? 输入'确认'来确认, 或输入其他内容来取消操作!")
                 clicker.nextChat { ctx ->
-                    if (ctx != "确认")
+                    if (ctx != "确认") {
+                        player.prettyInfo("操作已取消!")
                         return@nextChat
+                    }
                     LandManager.lands -= land
                     clicker.prettyInfo("已删除领地!")
                 }

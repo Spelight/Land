@@ -142,7 +142,7 @@ object LandManager {
                 GsonComponentSerializer.gson()
                     .serialize(
                         GsonComponentSerializer.gson()
-                            .deserialize(cacheMessageWithPrefix("抱歉, 你要准备 $crystalNeeds 个").toRawMessage())
+                            .deserialize(cacheMessageWithPrefix("抱歉, 你要准备 $crystalNeeds 个 ").toRawMessage())
                             .append(
                                 LegacyComponentSerializer.legacyAmpersand().deserialize("&b开拓水晶")
                                     .hoverEvent(com.mcstarrysky.land.Land.crystal.clone().asHoverEvent())
@@ -150,6 +150,7 @@ object LandManager {
                     )
             ).append(cacheMessageWithPrefixColor(" 才能占领你选中的这 ${area.size} 个区块"))
                 .sendTo(adaptPlayer(player))
+            return
         }
 
         val centre = LocationUtils.calculateLandCenter(area, player.world)
@@ -163,7 +164,7 @@ object LandManager {
             name,
             area = area.toMutableList(),
             tpLocation = centre,
-            cooperators = mutableListOf(),
+//            cooperators = mutableListOf(),
             users = mutableMapOf()
         )
         for (perm in defaultFlags) {
@@ -206,7 +207,7 @@ object LandManager {
             "${player.name} 的免费领地",
             area = area.toMutableList(),
             tpLocation = clickedLocation.add(0.0, 1.0, 0.0),
-            cooperators = mutableListOf(),
+//            cooperators = mutableListOf(),
             users = mutableMapOf()
         )
         for (perm in defaultFlags) {

@@ -6,7 +6,6 @@ import taboolib.common.env.RuntimeDependencies
 import taboolib.common.env.RuntimeDependency
 import taboolib.common.platform.Plugin
 import taboolib.library.xseries.XMaterial
-import taboolib.module.ui.virtual.InventoryHandler
 import taboolib.platform.util.buildItem
 
 /**
@@ -64,7 +63,7 @@ object Land : Plugin() {
 
     override fun onEnable() {
         LandManager.import()
-        InventoryHandler.instance
+        // InventoryHandler.instance
     }
 
     override fun onDisable() {

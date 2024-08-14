@@ -26,7 +26,7 @@ object LandMainMenu {
 
     fun openMenu(player: Player, back: Consumer<Player>? = null) {
         player.openMenu<Chest>("领地主菜单") {
-            virtualize()
+            // virtualize()
 
             map(
                 "b========",

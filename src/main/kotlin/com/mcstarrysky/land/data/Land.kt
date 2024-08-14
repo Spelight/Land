@@ -1,5 +1,3 @@
-@file:Suppress("DEPRECATION")
-
 package com.mcstarrysky.land.data
 
 import com.mcstarrysky.land.Land
@@ -27,8 +25,8 @@ import taboolib.module.chat.Components
 import taboolib.platform.util.checkItem
 import taboolib.platform.util.takeItem
 import java.util.Date
-import java.util.HashMap
 import java.util.UUID
+import kotlin.collections.HashMap
 
 /**
  * Land
@@ -51,22 +49,22 @@ data class Land(
     var leaveMessage: String? = "你离开了 &{#8abcd1}$name",
     @Serializable(with = LocationSerializer::class)
     var tpLocation: Location,
-    @Deprecated(message = "协作者功能已废除")
-    val cooperators: MutableList<@Serializable(with = UUIDSerializer::class) UUID>,
+//    @Deprecated(message = "协作者功能已废除")
+//    val cooperators: MutableList<@Serializable(with = UUIDSerializer::class) UUID>,
     val flags: MutableMap<String, Boolean> = mutableMapOf(),
     // 玩家 UUID 对一个 Map, Map 是 权限节点对应的值
     val users: MutableMap<@Serializable(with = UUIDSerializer::class) UUID, MutableMap<String, Boolean>>,
 ) {
 
-    init {
-        // 迁移协作者
-        if (cooperators.isNotEmpty()) {
-            cooperators.forEach { uuid ->
-                (users.computeIfAbsent(uuid) { HashMap() }) += PermAdmin.id to true
-            }
-            cooperators.clear()
-        }
-    }
+//    init {
+//        // 迁移协作者
+//        if (cooperators.isNotEmpty()) {
+//            cooperators.forEach { uuid ->
+//                (users.computeIfAbsent(uuid) { HashMap() }) += PermAdmin.id to true
+//            }
+//            cooperators.clear()
+//        }
+//    }
 
     @Transient
     val date = DATE_FORMAT.format(Date(timestamp))
@@ -85,6 +83,10 @@ data class Land(
             player.prettyInfo("你所要占领的区块已被其他领地占领, 请换一个区块!")
             return
         }
+        if (!ChunkUtils.isAdjacentToAnyChunk(location.chunk, area)) {
+            player.prettyInfo("占领的区块必须与你领地相邻!")
+            return
+        }
         if (player.checkItem(Land.crystal, 3)) {
             player.inventory.takeItem(3) { it.isSimilar(Land.crystal) }
             area += location.chunk
@@ -93,7 +95,7 @@ data class Land(
             // 这里用到一个奇怪的操作
             Components.parseRaw(
                 GsonComponentSerializer.gson()
-                    .serialize(GsonComponentSerializer.gson().deserialize(cacheMessageWithPrefix("抱歉, 你要准备 3 个").toRawMessage())
+                    .serialize(GsonComponentSerializer.gson().deserialize(cacheMessageWithPrefix("抱歉, 你要准备 3 个 ").toRawMessage())
                         .append(LegacyComponentSerializer.legacyAmpersand().deserialize("&b开拓水晶")
                             .hoverEvent(Land.crystal.clone().asHoverEvent())))
             ).append(cacheMessageWithPrefixColor(" 才能占领一个区块"))
@@ -111,8 +113,8 @@ data class Land(
     }
 
     fun hasPermission(player: Player, perm: Permission? = null): Boolean {
-        return if (perm == null) {
-            player.isOp || player.uniqueId == owner || users[player.uniqueId]?.get(PermAdmin.id) == true
+        return isAdmin(player) || if (perm == null) {
+            users[player.uniqueId]?.get(PermAdmin.id) == true
         } else {
             users[player.uniqueId]?.get(perm.id) ?: getFlag(perm.id)
         }

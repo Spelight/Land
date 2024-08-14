@@ -14,6 +14,7 @@ import taboolib.common.LifeCycle
 import taboolib.common.platform.Awake
 import taboolib.common.platform.event.SubscribeEvent
 import taboolib.library.xseries.XMaterial
+import taboolib.platform.util.attacker
 import taboolib.platform.util.buildItem
 
 /**
@@ -60,7 +61,7 @@ object PermDamageAnimals : Permission {
     @SubscribeEvent(ignoreCancelled = true)
     fun e(e: EntityDamageByEntityEvent) {
         if (e.entity is Animals) {
-            val player = e.damager as? Player ?: return
+            val player = e.attacker as? Player ?: return
             LandManager.getLand(e.entity.location)?.run {
                 if (!hasPermission(player, this@PermDamageAnimals)) {
                     e.isCancelled = true

@@ -3,6 +3,7 @@ package com.mcstarrysky.land.util
 import org.bukkit.Chunk
 import org.bukkit.Location
 import org.bukkit.World
+import kotlin.math.abs
 
 /**
  * Land
@@ -49,5 +50,13 @@ object ChunkUtils {
         }
 
         return chunks
+    }
+
+    fun isAdjacentToAnyChunk(chunk: Chunk, chunkList: List<Chunk>): Boolean {
+        return chunkList.all { it.world == chunk.world } && chunkList.any { neighborChunk ->
+            val dx = abs(chunk.x - neighborChunk.x)
+            val dz = abs(chunk.z - neighborChunk.z)
+            (dx <= 1 && dz <= 1) && (dx != 0 || dz != 0)
+        }
     }
 }

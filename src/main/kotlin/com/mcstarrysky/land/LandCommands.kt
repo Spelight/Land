@@ -76,5 +76,11 @@ object LandCommands {
                 }
             }
         }
+        command("landdelete", permission = "admin") {
+            exec<Player> {
+                val land = LandManager.getLand(sender.location) ?: return@exec
+                land.area -= sender.location.chunk
+            }
+        }
     }
 }

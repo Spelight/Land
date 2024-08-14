@@ -25,7 +25,7 @@ object PosSelection {
     val pos1 = ConcurrentHashMap<UUID, Chunk>()
     val pos2 = ConcurrentHashMap<UUID, Chunk>()
 
-    // @SubscribeEvent
+    @SubscribeEvent
     fun e(e: PlayerInteractEvent) {
         val player = e.player
         // 主手
@@ -35,43 +35,74 @@ object PosSelection {
                 // 判断左右键
                 when {
                     e.isLeftClickBlock() -> {
+                        e.isCancelled = true
                         val pos = e.clickedBlock!!.location.chunk
                         pos1.computeIfAbsent(player.uniqueId) { pos }
                         if (pos2[player.uniqueId] == null) {
-                            player.prettyInfo("+========选择的范围信息========+[](br)" +
-                                    "世界: &b" + LandSettings.worldAliases[pos.world.name] + "[](br)" +
-                                    "点1: &b(${pos.x}, ${pos.z})[](br)" +
-                                    "+===================================+")
+                            listOf(
+                                "+========选择的范围信息========+",
+                                "世界: &{#8cc269}" + LandSettings.worldAliases[pos.world.name],
+                                "点1: &{#8cc269}(${pos.x}, ${pos.z})",
+                                "+===========================+"
+                            ).forEach { player.prettyInfo(it) }
+//                            player.prettyInfo("+========选择的范围信息========+[](br)" +
+//                                    "世界: &{#8cc269}" + LandSettings.worldAliases[pos.world.name] + "[](br)" +
+//                                    "点1: &{#8cc269}(${pos.x}, ${pos.z})[](br)" +
+//                                    "+===================================+")
                                     //"+==(输入/land进入领地主菜单)==+")
                         } else {
                             val p2 = pos2[player.uniqueId]!!
                             val chunks = ChunkUtils.getChunksInRectangle(pos.world, pos, p2)
-                            player.prettyInfo("+========选择的范围信息========+[](br)" +
-                                    "世界: &b" + LandSettings.worldAliases[pos.world.name] + "[](br)" +
-                                    "点1: &b(${pos.x}, ${pos.z})[](br)" +
-                                    "点2: &b(${p2.x}, ${p2.z})[](br)" +
-                                    "范围花费: 每区块3*区块数${chunks.size}=${3*chunks.size}个开拓水晶[](br)" +
-                                    "+==(输入/land进入领地主菜单)==+")
+                            listOf(
+                                "+========选择的范围信息========+",
+                                "世界: &{#8cc269}" + LandSettings.worldAliases[pos.world.name],
+                                "点1: &{#8cc269}(${pos.x}, ${pos.z})",
+                                "点2: &{#8cc269}(${p2.x}, ${p2.z})",
+                                "范围花费: 每区块3*共${chunks.size}个区块=${3*chunks.size}个开拓水晶",
+                                "+====(输入/land进入领地主菜单)====+"
+                            ).forEach { player.prettyInfo(it) }
+//                            player.prettyInfo("+========选择的范围信息========+[](br)" +
+//                                    "世界: &{#8cc269}" + LandSettings.worldAliases[pos.world.name] + "[](br)" +
+//                                    "点1: &{#8cc269}(${pos.x}, ${pos.z})[](br)" +
+//                                    "点2: &{#8cc269}(${p2.x}, ${p2.z})[](br)" +
+//                                    "范围花费: 每区块3*共${chunks.size}个区块=${3*chunks.size}个开拓水晶[](br)" +
+//                                    "+==(输入/land进入领地主菜单)==+")
                         }
                     }
                     e.isRightClickBlock() -> {
+                        e.isCancelled = true
                         val pos = e.clickedBlock!!.location.chunk
                         pos2.computeIfAbsent(player.uniqueId) { pos }
                         if (pos1[player.uniqueId] == null) {
-                            player.prettyInfo("+========选择的范围信息========+[](br)" +
-                                    "世界: &b" + LandSettings.worldAliases[pos.world.name] + "[](br)" +
-                                    "点2: &b(${pos.x}, ${pos.z})[](br)" +
-                                    "+===================================+")
+                            listOf(
+                                "+========选择的范围信息========+",
+                                "世界: &{#8cc269}" + LandSettings.worldAliases[pos.world.name],
+                                "点2: &{#8cc269}(${pos.x}, ${pos.z})",
+                                "+===========================+"
+                            ).forEach { player.prettyInfo(it) }
+//                            player.prettyInfo("+========选择的范围信息========+[](br)" +
+//                                    "世界: &{#8cc269}" + LandSettings.worldAliases[pos.world.name] + "[](br)" +
+//                                    "点2: &{#8cc269}(${pos.x}, ${pos.z})[](br)" +
+//                                    "+===================================+")
                             //"+==(输入/land进入领地主菜单)==+")
                         } else {
                             val p1 = pos1[player.uniqueId]!!
                             val chunks = ChunkUtils.getChunksInRectangle(pos.world, pos, p1)
-                            player.prettyInfo("+========选择的范围信息========+[](br)" +
-                                    "世界: &b" + LandSettings.worldAliases[pos.world.name] + "[](br)" +
-                                    "点1: &b(${p1.x}, ${p1.z})[](br)" +
-                                    "点2: &b(${pos.x}, ${pos.z})[](br)" +
-                                    "范围花费: 每区块3*区块数${chunks.size}=${3*chunks.size}个开拓水晶[](br)" +
-                                    "+==(输入/land进入领地主菜单)==+")
+                            listOf(
+                                "+========选择的范围信息========+",
+                                "世界: &{#8cc269}" + LandSettings.worldAliases[pos.world.name],
+                                "点1: &{#8cc269}(${p1.x}, ${p1.z})",
+                                "点2: &{#8cc269}(${pos.x}, ${pos.z})",
+                                "范围花费: 每区块3*共${chunks.size}个区块=${3*chunks.size}个开拓水晶",
+                                "+====(输入/land进入领地主菜单)====+"
+                            ).forEach { player.prettyInfo(it) }
+
+//                            player.prettyInfo("+========选择的范围信息========+[](br)" +
+//                                    "世界: &{#8cc269}" + LandSettings.worldAliases[pos.world.name] + "[](br)" +
+//                                    "点1: &{#8cc269}(${p1.x}, ${p1.z})[](br)" +
+//                                    "点2: &{#8cc269}(${pos.x}, ${pos.z})[](br)" +
+//                                    "范围花费: 每区块3*区块数${chunks.size}=${3*chunks.size}个开拓水晶[](br)" +
+//                                    "+==(输入/land进入领地主菜单)==+")
                         }
                     }
                 }

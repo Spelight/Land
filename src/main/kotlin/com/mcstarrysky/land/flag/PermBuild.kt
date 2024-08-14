@@ -20,6 +20,7 @@ import taboolib.common.LifeCycle
 import taboolib.common.platform.Awake
 import taboolib.common.platform.event.SubscribeEvent
 import taboolib.library.xseries.XMaterial
+import taboolib.platform.util.attacker
 import taboolib.platform.util.buildItem
 
 /**
@@ -124,7 +125,7 @@ object PermBuild : Permission {
     @SubscribeEvent(ignoreCancelled = true)
     fun e(e: EntityDamageByEntityEvent) {
         if (e.entity is ArmorStand) {
-            val player = e.damager as? Player ?: return
+            val player = e.attacker as? Player ?: return
 //            val player = Servers.getAttackerInDamageEvent(e) ?: return
             LandManager.getLand(e.entity.location.block.location)?.run {
                 if (!hasPermission(player, this@PermBuild)) {

@@ -27,7 +27,7 @@ object LandFlagsMenu {
     fun openMenu(player: Player, land: Land, other: OfflinePlayer?, back: Consumer<Player>?) {
         val title = if (other == null) "领地标记管理" else "${other.name} 的标记管理"
         player.openMenu<PageableChest<Permission>>(title) {
-            virtualize()
+            // virtualize()
 
             map(
                 "b======pn",
@@ -60,7 +60,7 @@ object LandFlagsMenu {
             set('b', MenuRegistry.BACK) { back?.accept(player) }
 
             onClick { event, flag ->
-                when (event.virtualEvent().clickType) {
+                when (event.clickEvent().click) {
                     ClickType.LEFT, ClickType.SHIFT_LEFT -> {
                         // 如果没设置, 就设置成默认值
                         if (land.getFlagValueOrNull(flag.id) == null) {

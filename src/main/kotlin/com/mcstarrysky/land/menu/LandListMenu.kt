@@ -23,7 +23,7 @@ object LandListMenu {
 
     fun openMenu(player: Player, elements: List<Land>, back: Consumer<Player>?) {
         player.openMenu<PageableChest<Land>>("领地列表 #%p") {
-            virtualize()
+            // virtualize()
 
             map(
                 "b======pn",
@@ -57,7 +57,7 @@ object LandListMenu {
             }
 
             onClick { e, land ->
-                when (e.virtualEvent().clickType) {
+                when (e.clickEvent().click) {
                     ClickType.LEFT, ClickType.SHIFT_LEFT -> {
                         e.clicker.closeInventory()
                         land.teleport(e.clicker)
