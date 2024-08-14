@@ -1,6 +1,9 @@
 package com.mcstarrysky.land.listener
 
 import com.mcstarrysky.land.Land
+import com.mcstarrysky.land.LandSettings
+import com.mcstarrysky.land.util.ChunkUtils
+import com.mcstarrysky.land.util.prettyInfo
 import org.bukkit.Chunk
 import org.bukkit.event.player.PlayerInteractEvent
 import taboolib.common.platform.event.SubscribeEvent
@@ -31,8 +34,46 @@ object PosSelection {
             if (player.equipment.itemInMainHand.isSimilar(Land.tool)) {
                 // 判断左右键
                 when {
-                    e.isLeftClickBlock() -> pos1.computeIfAbsent(player.uniqueId) { e.clickedBlock!!.location.chunk }
-                    e.isRightClickBlock() -> pos2.computeIfAbsent(player.uniqueId) { e.clickedBlock!!.location.chunk }
+                    e.isLeftClickBlock() -> {
+                        val pos = e.clickedBlock!!.location.chunk
+                        pos1.computeIfAbsent(player.uniqueId) { pos }
+                        if (pos2[player.uniqueId] == null) {
+                            player.prettyInfo("+========选择的范围信息========+[](br)" +
+                                    "世界: &b" + LandSettings.worldAliases[pos.world.name] + "[](br)" +
+                                    "点1: &b(${pos.x}, ${pos.z})[](br)" +
+                                    "+===================================+")
+                                    //"+==(输入/land进入领地主菜单)==+")
+                        } else {
+                            val p2 = pos2[player.uniqueId]!!
+                            val chunks = ChunkUtils.getChunksInRectangle(pos.world, pos, p2)
+                            player.prettyInfo("+========选择的范围信息========+[](br)" +
+                                    "世界: &b" + LandSettings.worldAliases[pos.world.name] + "[](br)" +
+                                    "点1: &b(${pos.x}, ${pos.z})[](br)" +
+                                    "点2: &b(${p2.x}, ${p2.z})[](br)" +
+                                    "范围花费: 每区块3*区块数${chunks.size}=${3*chunks.size}个开拓水晶[](br)" +
+                                    "+==(输入/land进入领地主菜单)==+")
+                        }
+                    }
+                    e.isRightClickBlock() -> {
+                        val pos = e.clickedBlock!!.location.chunk
+                        pos2.computeIfAbsent(player.uniqueId) { pos }
+                        if (pos1[player.uniqueId] == null) {
+                            player.prettyInfo("+========选择的范围信息========+[](br)" +
+                                    "世界: &b" + LandSettings.worldAliases[pos.world.name] + "[](br)" +
+                                    "点2: &b(${pos.x}, ${pos.z})[](br)" +
+                                    "+===================================+")
+                            //"+==(输入/land进入领地主菜单)==+")
+                        } else {
+                            val p1 = pos1[player.uniqueId]!!
+                            val chunks = ChunkUtils.getChunksInRectangle(pos.world, pos, p1)
+                            player.prettyInfo("+========选择的范围信息========+[](br)" +
+                                    "世界: &b" + LandSettings.worldAliases[pos.world.name] + "[](br)" +
+                                    "点1: &b(${p1.x}, ${p1.z})[](br)" +
+                                    "点2: &b(${pos.x}, ${pos.z})[](br)" +
+                                    "范围花费: 每区块3*区块数${chunks.size}=${3*chunks.size}个开拓水晶[](br)" +
+                                    "+==(输入/land进入领地主菜单)==+")
+                        }
+                    }
                 }
             }
         }

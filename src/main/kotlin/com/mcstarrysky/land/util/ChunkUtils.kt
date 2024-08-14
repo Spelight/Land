@@ -2,6 +2,7 @@ package com.mcstarrysky.land.util
 
 import org.bukkit.Chunk
 import org.bukkit.Location
+import org.bukkit.World
 
 /**
  * Land
@@ -23,6 +24,26 @@ object ChunkUtils {
         for (dz in -radius..radius) {  // Iterate vertically
             for (dx in -radius..radius) {  // Iterate horizontally
                 val chunk = location.world.getChunkAt(playerChunkX + dx, playerChunkZ + dz)
+                chunks.add(chunk)
+            }
+        }
+
+        return chunks
+    }
+
+    fun getChunksInRectangle(world: World, chunk1: Chunk, chunk2: Chunk): List<Chunk> {
+        // 获取 chunk1 和 chunk2 的边界
+        val minX = minOf(chunk1.x, chunk2.x)
+        val minZ = minOf(chunk1.z, chunk2.z)
+        val maxX = maxOf(chunk1.x, chunk2.x)
+        val maxZ = maxOf(chunk1.z, chunk2.z)
+
+        val chunks = mutableListOf<Chunk>()
+
+        // 遍历矩形内的所有 Chunk
+        for (x in minX..maxX) {
+            for (z in minZ..maxZ) {
+                val chunk = world.getChunkAt(x, z)
                 chunks.add(chunk)
             }
         }
