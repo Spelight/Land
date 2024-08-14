@@ -1,6 +1,10 @@
+@file:Suppress("DEPRECATION")
+
 package com.mcstarrysky.land.data
 
+import com.mcstarrysky.land.flag.PermAdmin
 import com.mcstarrysky.land.flag.PermTeleport
+import com.mcstarrysky.land.flag.Permission
 import com.mcstarrysky.land.manager.LandManager
 import com.mcstarrysky.land.serializers.ChunkSerializer
 import com.mcstarrysky.land.serializers.LocationSerializer
@@ -18,6 +22,7 @@ import org.bukkit.OfflinePlayer
 import org.bukkit.entity.Player
 import taboolib.common5.cbool
 import java.util.Date
+import java.util.HashMap
 import java.util.UUID
 
 /**
@@ -41,9 +46,21 @@ data class Land(
     var leaveMessage: String? = "你离开了 &{#8abcd1}$name",
     @Serializable(with = LocationSerializer::class)
     var tpLocation: Location,
+    @Deprecated(message = "协作者功能已废除")
     val cooperators: MutableList<@Serializable(with = UUIDSerializer::class) UUID>,
-    val flags: MutableMap<String, Boolean> = mutableMapOf()
+    val flags: MutableMap<String, Boolean> = mutableMapOf(),
+    // 玩家 UUID 对一个 Map, Map 是 权限节点对应的值
+    val users: MutableMap<@Serializable(with = UUIDSerializer::class) UUID, MutableMap<String, Boolean>>,
 ) {
+
+    init {
+        // 迁移协作者
+        if (cooperators.isNotEmpty()) {
+            cooperators.forEach { uuid ->
+                (users.computeIfAbsent(uuid) { HashMap() }) += PermAdmin.id to true
+            }
+        }
+    }
 
     @Transient
     val date = DATE_FORMAT.format(Date(timestamp))
@@ -56,15 +73,19 @@ data class Land(
         PermTeleport.teleport(player, this)
     }
 
-    fun hasPermission(player: Player): Boolean {
-        return player.isOp || player.uniqueId == owner || player.uniqueId in cooperators
+    fun hasPermission(player: Player, perm: Permission? = null): Boolean {
+        return if (perm == null) {
+            player.isOp || player.uniqueId == owner || users[player.uniqueId]?.get(PermAdmin.id) == true
+        } else {
+            users[player.uniqueId]?.get(perm.id) == true
+        }
     }
 
     fun saveToString(): String {
         return json.encodeToString(this)
     }
 
-    fun getOwner(): OfflinePlayer? {
+    private fun getOwner(): OfflinePlayer? {
         if (owner != ZERO_UUID) {
             return Bukkit.getOfflinePlayer(owner)
         }
