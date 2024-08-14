@@ -37,14 +37,9 @@ object LandFlagsMenu {
 
             slotsBy('#')
 
-            // TODO: filter
             elements {
                 LandManager.permissions.filter { if (other != null) it.playerSide else it.worldSide }.sortedBy { it.priority }.toMutableList()
-                    .also {
-                        if (!player.isOp) {
-                            it.removeAll(it.filter { it.adminSide == player.isOp })
-                        }
-                    }
+                    .filter { if (player.isOp) true else it.adminSide == player.isOp }
             }
 
             onGenerate(async = true) { _, flag, _, _ ->
@@ -62,20 +57,41 @@ object LandFlagsMenu {
             onClick { event, flag ->
                 when (event.clickEvent().click) {
                     ClickType.LEFT, ClickType.SHIFT_LEFT -> {
-                        // 如果没设置, 就设置成默认值
-                        if (land.getFlagValueOrNull(flag.id) == null) {
-                            land.setFlag(flag.id, flag.default, other)
+                        // FIXME: 这里的代码很乱, 仅仅是能用, 还需要后续解耦
+                        // 如果是在设置全局权限
+                        if (other == null) {
+                            // 如果没设置, 就设置成默认值
+                            if (land.getFlagValueOrNull(flag.id) == null) {
+                                land.setFlag(flag.id, flag.default, null)
+                            } else {
+                                // 设置成相反的值
+                                val value = land.getFlag(flag.id)
+                                land.setFlag(flag.id, !value, null)
+                            }
                         } else {
-                            val value = land.getFlag(flag.id)
-                            land.setFlag(flag.id, !value, other)
+                            // 如果没设置, 就设置成默认值
+                            if (land.getUserFlagValueOrNull(other, flag.id) == null) {
+                                land.setFlag(flag.id, flag.default, other)
+                            } else {
+                                // 设置成相反的值
+                                val value = land.getUserFlag(other, flag.id)
+                                land.setFlag(flag.id, !value, other)
+                            }
                         }
+
                         openMenu(player, land, other, back)
                     }
                     ClickType.RIGHT, ClickType.SHIFT_RIGHT -> {
-                        if (land.getFlagValueOrNull(flag.id) != null) {
-                            land.setFlag(flag.id, null, other)
-                            openMenu(player, land, other, back)
+                        if (other == null) {
+                            if (land.getFlagValueOrNull(flag.id) != null) {
+                                land.setFlag(flag.id, null, null)
+                            }
+                        } else {
+                            if (land.getUserFlagValueOrNull(other, flag.id) != null) {
+                                land.setFlag(flag.id, null, other)
+                            }
                         }
+                        openMenu(player, land, other, back)
                     }
                     else -> {
                     }

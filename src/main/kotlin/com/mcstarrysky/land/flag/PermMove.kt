@@ -58,7 +58,7 @@ object PermMove : Permission {
         onlinePlayers.forEach { p ->
             val loc = p.location
             LandManager.getLand(loc)?.run {
-                if (!hasPermission(p) && !getFlag(this@PermMove.id)) {
+                if (!hasPermission(p, this@PermMove)) {
                     val centre = LocationUtils.calculateLandCenter(area, p.world)
                     val l: Location = p.location  // 获取玩家当前位置
 

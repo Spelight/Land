@@ -112,12 +112,12 @@ data class Land(
         return player.isOp || owner == player.uniqueId
     }
 
-    fun hasPermission(player: Player, perm: Permission? = null): Boolean {
-        return isAdmin(player) || if (perm == null) {
-            users[player.uniqueId]?.get(PermAdmin.id) == true
-        } else {
-            users[player.uniqueId]?.get(perm.id) ?: getFlag(perm.id)
-        }
+    fun hasAdminPerm(player: Player): Boolean {
+        return users[player.uniqueId]?.get(PermAdmin.id) == true
+    }
+
+    fun hasPermission(player: Player, perm: Permission): Boolean {
+        return isAdmin(player) || hasAdminPerm(player) || users[player.uniqueId]?.get(perm.id) ?: getFlag(perm.id)
     }
 
     fun saveToString(): String {
@@ -147,6 +147,14 @@ data class Land(
      */
     fun getFlagValueOrNull(flag: String): Boolean? {
         return flags[flag]?.cbool
+    }
+
+    fun getUserFlag(user: OfflinePlayer, flag: String): Boolean {
+        return users[user.uniqueId]?.get(flag) ?: LandManager.permissions.firstOrNull { it.id == flag }?.default ?: false
+    }
+
+    fun getUserFlagValueOrNull(user: OfflinePlayer, flag: String): Boolean? {
+        return users[user.uniqueId]?.get(flag)
     }
 
     /**

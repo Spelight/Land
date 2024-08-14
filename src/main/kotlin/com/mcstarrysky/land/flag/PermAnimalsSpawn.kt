@@ -38,7 +38,7 @@ object PermAnimalsSpawn : Permission {
         get() = true
 
     override val playerSide: Boolean
-        get() = true
+        get() = false
 
     override fun generateMenuItem(land: Land, player: OfflinePlayer?): ItemStack {
         return buildItem(XMaterial.SHEEP_SPAWN_EGG) {
