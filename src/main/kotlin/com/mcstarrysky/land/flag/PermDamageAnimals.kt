@@ -3,26 +3,24 @@ package com.mcstarrysky.land.flag
 import com.mcstarrysky.land.data.Land
 import com.mcstarrysky.land.manager.LandManager
 import com.mcstarrysky.land.util.display
+import com.mcstarrysky.land.util.prettyInfo
 import com.mcstarrysky.land.util.registerPermission
-import org.bukkit.entity.Mob
-import org.bukkit.entity.Monster
-import org.bukkit.event.entity.EntitySpawnEvent
+import org.bukkit.entity.Animals
+import org.bukkit.entity.Player
+import org.bukkit.event.entity.EntityDamageByEntityEvent
 import org.bukkit.inventory.ItemFlag
 import org.bukkit.inventory.ItemStack
-import taboolib.common.LifeCycle
-import taboolib.common.platform.Awake
-import taboolib.common.platform.event.SubscribeEvent
-import taboolib.library.xseries.XMaterial
-import taboolib.platform.util.buildItem
+import taboolib.internal.xseries.XMaterial
+import taboolib.util.item.ItemBuilder
 
 /**
  * Land
- * com.mcstarrysky.land.flag.PermMobSpawn
+ * com.mcstarrysky.land.flag.PermDamageAnimals
  *
- * @author mical
- * @since 2024/8/3 17:23
+ * @author HXS
+ * @since 2024/8/14 13:57
  */
-object PermMobSpawn : Permission {
+object PermDamageAnimals : Permission {
 
     @Awake(LifeCycle.ENABLE)
     private fun init() {
@@ -30,10 +28,10 @@ object PermMobSpawn : Permission {
     }
 
     override val id: String
-        get() = "mob_spawn"
+        get() = "damage_animals"
 
     override val default: Boolean
-        get() = true
+        get() = false
 
     override val worldSide: Boolean
         get() = true
@@ -42,11 +40,11 @@ object PermMobSpawn : Permission {
         get() = true
 
     override fun generateMenuItem(land: Land): ItemStack {
-        return buildItem(XMaterial.ZOMBIE_SPAWN_EGG) {
-            name = "&f怪物产生 ${land.getFlagOrNull(id).display}"
+        return ItemBuilder(XMaterial.IRON_SWORD){
+            name = "&f攻击动物 ${land.getFlagOrNull(id).display}"
             lore += listOf(
                 "&7允许行为:",
-                "&8生成怪物",
+                "&8对动物 (Animals) 造成伤害"
                 "",
                 "&e左键修改值, 右键取消设置"
             )
@@ -57,11 +55,13 @@ object PermMobSpawn : Permission {
     }
 
     @SubscribeEvent(ignoreCancelled = true)
-    fun e(e: EntitySpawnEvent) {
-        if (e.entity is Monster) {
-            LandManager.getLand(e.entity.location)?.run {
-                if (!getFlag(this@PermMobSpawn.id)) {
+    fun e(e: EntityDamageByEntityEvent) {
+        if (e.entity is Animals) {
+            val player = e.damager as? Player ?: return
+            LandManager.getLand(e.inventory.location ?: return)?.run {
+                if (!hasPermission(e.player) && !getFlag(this@PermDamageAnimals.id)) {
                     e.isCancelled = true
+                    e.player.prettyInfo("没有权限, 禁止攻击动物&7\\(标记: ${this@PermDamageAnimals.id}\\)")
                 }
             }
         }
