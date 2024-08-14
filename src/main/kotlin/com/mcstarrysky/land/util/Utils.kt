@@ -79,13 +79,11 @@ fun CommandSender.prettyInfo(message: String, vararg args: Any) {
     cacheMessageWithPrefix(message, *args).sendTo(adaptCommandSender(this))
 }
 
-fun cacheMessageWithPrefix(message: String, vararg args: Any): Source {
-    return "&8\\[&{${color}}领地&8\\] &{${prefix}}$message".replaceWithOrder(*args)
+fun cacheMessageWithPrefix(message: String, vararg args: Any) =
+    "&8\\[&{${color}}领地&8\\] &{${prefix}}$message".replaceWithOrder(*args)
         .component().buildColored()
-}
 
-fun cacheMessageWithPrefixColor(message: String, vararg args: Any): Source {
-    return "&{${prefix}}$message".replaceWithOrder(*args).component().buildColored()
-}
+fun cacheMessageWithPrefixColor(message: String, vararg args: Any) =
+    "&{${prefix}}$message".replaceWithOrder(*args).component().buildColored()
 
 val DATE_FORMAT = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")

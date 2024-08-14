@@ -22,7 +22,6 @@ import taboolib.platform.util.buildItem
  * @author HXS
  * @since 2024/8/14 16:51
  */
-
 object PermThrow : Permission {
 
     @Awake(LifeCycle.ENABLE)

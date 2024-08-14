@@ -43,9 +43,9 @@ object Land : Plugin() {
     val crystal: ItemStack = buildItem(XMaterial.AMETHYST_SHARD) {
         name = "&{#D8D8FA}开拓水晶"
         lore += listOf(
-            "&7可以在创建",
-            "&7创建最小为&a3*3*3&7区块大小的领地",
-            "&7圈地时准星需指向该核心"
+            "&7凭借&a3&7个开拓水晶",
+            "&7可以占领一个新区块",
+            "&7在你的领地信息菜单点击占领按钮来占领"
         )
         colored()
     }

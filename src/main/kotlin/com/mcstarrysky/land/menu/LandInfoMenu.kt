@@ -32,12 +32,30 @@ object LandInfoMenu {
         player.openMenu<Chest>("领地(ID:${land.id}) ${land.name}") {
             virtualize()
 
+//            map(
+//                "b========",
+//                " a z f d ", // 描述, 加入, 传送点, 标记
+//                " g c m e ", // 转让所有者, 退出, 合作者, 删除
+//                "========="
+//            )
+
+            // 2024.8.14
             map(
                 "b========",
-                " a z f d ", // 描述, 加入, 传送点, 标记
-                " g c m e ", // 转让所有者, 退出, 合作者, 删除
-                "========="
+                "  a z f  ", // 描述, 加入, c欢送点
+                "  d g c  ", // 标记, 转让所有者, 退出
+                "  m z e  " //  玩家标记管理, 占领当前区块, 删除
             )
+
+            set('z', buildItem(XMaterial.NETHERITE_BOOTS) {
+                name = "&d占领脚下区块"
+                lore += listOf(
+                    "&7需要花费 &b3 &7个开拓水晶"
+                )
+                colored()
+            }) {
+                land.tryClaim(clicker)
+            }
 
             set('b', MenuRegistry.BACK) {
                 LandListMenu.openMenu(player, elements, back)

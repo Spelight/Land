@@ -25,7 +25,8 @@ import java.util.function.Consumer
 object LandFlagsMenu {
 
     fun openMenu(player: Player, land: Land, other: OfflinePlayer?, back: Consumer<Player>?) {
-        player.openMenu<PageableChest<Permission>>("标记管理") {
+        val title = if (other == null) "领地标记管理" else "${other.name} 的标记管理"
+        player.openMenu<PageableChest<Permission>>(title) {
             virtualize()
 
             map(

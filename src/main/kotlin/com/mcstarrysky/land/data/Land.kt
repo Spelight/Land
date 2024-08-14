@@ -2,6 +2,7 @@
 
 package com.mcstarrysky.land.data
 
+import com.mcstarrysky.land.Land
 import com.mcstarrysky.land.flag.PermAdmin
 import com.mcstarrysky.land.flag.PermTeleport
 import com.mcstarrysky.land.flag.Permission
@@ -9,9 +10,7 @@ import com.mcstarrysky.land.manager.LandManager
 import com.mcstarrysky.land.serializers.ChunkSerializer
 import com.mcstarrysky.land.serializers.LocationSerializer
 import com.mcstarrysky.land.serializers.UUIDSerializer
-import com.mcstarrysky.land.util.DATE_FORMAT
-import com.mcstarrysky.land.util.ZERO_UUID
-import com.mcstarrysky.land.util.json
+import com.mcstarrysky.land.util.*
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.Transient
 import kotlinx.serialization.encodeToString
@@ -20,7 +19,13 @@ import org.bukkit.Chunk
 import org.bukkit.Location
 import org.bukkit.OfflinePlayer
 import org.bukkit.entity.Player
+import taboolib.common.platform.function.adaptPlayer
 import taboolib.common5.cbool
+import taboolib.module.chat.Components
+import taboolib.platform.util.checkItem
+import taboolib.platform.util.countItem
+import taboolib.platform.util.hoverItem
+import taboolib.platform.util.takeItem
 import java.util.Date
 import java.util.HashMap
 import java.util.UUID
@@ -59,6 +64,7 @@ data class Land(
             cooperators.forEach { uuid ->
                 (users.computeIfAbsent(uuid) { HashMap() }) += PermAdmin.id to true
             }
+            cooperators.clear()
         }
     }
 
@@ -67,6 +73,28 @@ data class Land(
 
     fun isInArea(location: Location): Boolean {
         return area.any { it == location.chunk }
+    }
+
+    fun tryClaim(player: Player) {
+        val location = player.location
+        if (isInArea(location)) {
+            player.prettyInfo("你已经占领了这个区块了!")
+            return
+        }
+        if (LandManager.lands.any { it.id != id && it.isInArea(location) }) {
+            player.prettyInfo("你所要占领的区块已被其他领地占领, 请换一个区块!")
+            return
+        }
+        if (player.checkItem(Land.crystal, 3)) {
+            player.inventory.takeItem(3) { it.isSimilar(Land.crystal) }
+            area += location.chunk
+            player.prettyInfo("占领区块成功!")
+        } else {
+            cacheMessageWithPrefix("抱歉, 你要准备 3 个 ")
+                .append(Components.text("&b开拓水晶").hoverItem(Land.crystal))
+                .append(cacheMessageWithPrefixColor(" 才能占领一个区块"))
+                .sendTo(adaptPlayer(player))
+        }
     }
 
     fun teleport(player: Player) {
