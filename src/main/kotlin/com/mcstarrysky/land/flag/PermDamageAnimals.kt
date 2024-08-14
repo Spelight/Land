@@ -10,8 +10,10 @@ import org.bukkit.entity.Player
 import org.bukkit.event.entity.EntityDamageByEntityEvent
 import org.bukkit.inventory.ItemFlag
 import org.bukkit.inventory.ItemStack
-import taboolib.internal.xseries.XMaterial
-import taboolib.util.item.ItemBuilder
+import taboolib.common.platform.Awake
+import taboolib.common.platform.event.SubscribeEvent
+import taboolib.library.xseries.XMaterial
+import taboolib.platform.util.buildItem
 
 /**
  * Land
@@ -40,7 +42,7 @@ object PermDamageAnimals : Permission {
         get() = true
 
     override fun generateMenuItem(land: Land): ItemStack {
-        return ItemBuilder(XMaterial.IRON_SWORD){
+        return buildItem(XMaterial.IRON_SWORD){
             name = "&f攻击动物 ${land.getFlagOrNull(id).display}"
             lore += listOf(
                 "&7允许行为:",
