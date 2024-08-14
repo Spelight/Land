@@ -4,6 +4,7 @@ import com.mcstarrysky.land.data.Land
 import com.mcstarrysky.land.manager.LandManager
 import com.mcstarrysky.land.util.prettyInfo
 import com.mcstarrysky.land.util.registerPermission
+import org.bukkit.OfflinePlayer
 import org.bukkit.entity.Golem
 import org.bukkit.entity.Player
 import org.bukkit.event.entity.EntityDamageByEntityEvent
@@ -41,7 +42,7 @@ object PermDamageGolem : Permission {
     override val playerSide: Boolean
         get() = true
 
-    override fun generateMenuItem(land: Land, player: Player?): ItemStack {
+    override fun generateMenuItem(land: Land, player: OfflinePlayer?): ItemStack {
         return buildItem(XMaterial.STONE_SWORD){
             name = "&f攻击傀儡 ${flagValue(land, player)}"
             lore += listOf(

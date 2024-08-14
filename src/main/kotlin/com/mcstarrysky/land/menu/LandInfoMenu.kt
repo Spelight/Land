@@ -233,19 +233,23 @@ object LandInfoMenu {
                 colored()
             }) {
                 if (!check(player, land)) return@set
-                LandFlagsMenu.openMenu(player, land, back, elements)
+                LandFlagsMenu.openMenu(player, land, null) {
+                    openMenu(player, land, back, elements)
+                }
             }
 
             set('m', buildItem(XMaterial.PLAYER_HEAD) {
-                name = "&a查看协作者"
+                name = "&a管理玩家权限"
                 lore += listOf(
-                    "&7协作者具有领地的大部分权限",
-                    "&7但没有领地的设置与修改权"
+                    "&7管理指定玩家在领地内的权限",
+                    "&7例如设置某个玩家禁止移动"
                 )
                 colored()
             }) {
                 if (!check(player, land)) return@set
-                LandCooperatorsMenu.openMenu(player, land, back, elements)
+                LandPlayerPermsMenu.openMenu(player, land) {
+                    openMenu(player, land, back, elements)
+                }
             }
         }
     }

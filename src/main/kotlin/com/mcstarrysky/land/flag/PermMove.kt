@@ -4,7 +4,7 @@ import com.mcstarrysky.land.data.Land
 import com.mcstarrysky.land.manager.LandManager
 import com.mcstarrysky.land.util.*
 import org.bukkit.Location
-import org.bukkit.entity.Player
+import org.bukkit.OfflinePlayer
 import org.bukkit.inventory.ItemFlag
 import org.bukkit.inventory.ItemStack
 import taboolib.common.LifeCycle
@@ -38,7 +38,7 @@ object PermMove : Permission {
     override val playerSide: Boolean
         get() = true
 
-    override fun generateMenuItem(land: Land, player: Player?): ItemStack {
+    override fun generateMenuItem(land: Land, player: OfflinePlayer?): ItemStack {
         return buildItem(XMaterial.IRON_BOOTS) {
             name = "&f移动 ${flagValue(land, player)}"
             lore += listOf(

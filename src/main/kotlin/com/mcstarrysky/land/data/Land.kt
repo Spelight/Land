@@ -110,12 +110,25 @@ data class Land(
         return flags[flag]?.cbool
     }
 
-    fun setFlag(flag: String, value: Boolean?) {
+    /**
+     * 设置权限
+     * other == null -> 设置领地通用权限
+     * other != null -> 设置玩家在该领地的权限
+     */
+    fun setFlag(flag: String, value: Boolean?, other: OfflinePlayer?) {
         if (value == null) {
-            flags -= flag
+            if (other != null) {
+                (users.computeIfAbsent(other.uniqueId) { HashMap() }) -= flag
+            } else {
+                flags -= flag
+            }
             return
         }
-        flags += flag to value
+        if (other != null) {
+            (users.computeIfAbsent(other.uniqueId) { HashMap() }) += flag to value
+        } else {
+            flags += flag to value
+        }
     }
 
     fun export() {

@@ -4,7 +4,7 @@ import com.mcstarrysky.land.data.Land
 import com.mcstarrysky.land.manager.LandManager
 import com.mcstarrysky.land.util.prettyInfo
 import com.mcstarrysky.land.util.registerPermission
-import org.bukkit.entity.Player
+import org.bukkit.OfflinePlayer
 import org.bukkit.event.block.Action
 import org.bukkit.event.player.PlayerInteractEvent
 import org.bukkit.inventory.ItemStack
@@ -40,7 +40,7 @@ object PermInteract : Permission {
     override val playerSide: Boolean
         get() = true
 
-    override fun generateMenuItem(land: Land, player: Player?): ItemStack {
+    override fun generateMenuItem(land: Land, player: OfflinePlayer?): ItemStack {
         return buildItem(XMaterial.OAK_DOOR) {
             name = "&f交互 ${flagValue(land, player)}"
             lore += listOf(

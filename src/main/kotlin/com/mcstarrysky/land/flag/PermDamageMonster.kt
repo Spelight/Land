@@ -2,9 +2,9 @@ package com.mcstarrysky.land.flag
 
 import com.mcstarrysky.land.data.Land
 import com.mcstarrysky.land.manager.LandManager
-import com.mcstarrysky.land.util.display
 import com.mcstarrysky.land.util.prettyInfo
 import com.mcstarrysky.land.util.registerPermission
+import org.bukkit.OfflinePlayer
 import org.bukkit.entity.Monster
 import org.bukkit.entity.Player
 import org.bukkit.event.entity.EntityDamageByEntityEvent
@@ -42,7 +42,7 @@ object PermDamageMonster : Permission{
     override val playerSide: Boolean
         get() = true
 
-        override fun generateMenuItem(land: Land, player: Player?): ItemStack {
+        override fun generateMenuItem(land: Land, player: OfflinePlayer?): ItemStack {
             return buildItem(XMaterial.GOLDEN_SWORD){
                 name = "&f攻击怪物 ${flagValue(land, player)}"
                 lore += listOf(

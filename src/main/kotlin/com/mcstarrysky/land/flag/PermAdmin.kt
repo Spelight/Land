@@ -2,7 +2,7 @@ package com.mcstarrysky.land.flag
 
 import com.mcstarrysky.land.data.Land
 import com.mcstarrysky.land.util.registerPermission
-import org.bukkit.entity.Player
+import org.bukkit.OfflinePlayer
 import org.bukkit.inventory.ItemStack
 import taboolib.common.LifeCycle
 import taboolib.common.platform.Awake
@@ -35,7 +35,7 @@ object PermAdmin : Permission {
     override val playerSide: Boolean
         get() = true
 
-    override fun generateMenuItem(land: Land, player: Player?): ItemStack {
+    override fun generateMenuItem(land: Land, player: OfflinePlayer?): ItemStack {
         return buildItem(XMaterial.COMMAND_BLOCK) {
             name = "&f管理权力 ${flagValue(land, player)}"
             lore += listOf(

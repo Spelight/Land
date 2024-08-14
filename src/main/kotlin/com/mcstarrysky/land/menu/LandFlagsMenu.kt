@@ -6,6 +6,7 @@ import com.mcstarrysky.land.manager.LandManager
 import com.mcstarrysky.land.util.MenuRegistry
 import com.mcstarrysky.land.util.MenuRegistry.markHeader
 import com.mcstarrysky.land.util.MenuRegistry.markPageButton
+import org.bukkit.OfflinePlayer
 import org.bukkit.entity.Player
 import org.bukkit.event.inventory.ClickType
 import taboolib.module.ui.openMenu
@@ -21,8 +22,8 @@ import java.util.function.Consumer
  */
 object LandFlagsMenu {
 
-    fun openMenu(player: Player, land: Land, back: Consumer<Player>?, elements: List<Land>) {
-        player.openMenu<PageableChest<Permission>>("领地(ID:${land.id}) ${land.name} 标记管理") {
+    fun openMenu(player: Player, land: Land, other: OfflinePlayer?, back: Consumer<Player>?) {
+        player.openMenu<PageableChest<Permission>>("标记管理") {
             virtualize()
 
             map(
@@ -33,31 +34,32 @@ object LandFlagsMenu {
 
             slotsBy('#')
 
+            // TODO: filter
             elements { LandManager.permissions }
 
-            onGenerate(async = true) { _, flag, _, _ -> flag.generateMenuItem(land) }
+            onGenerate(async = true) { _, flag, _, _ -> flag.generateMenuItem(land, other) }
 
             markHeader()
             markPageButton()
 
-            set('b', MenuRegistry.BACK) { LandInfoMenu.openMenu(player, land, back, elements) }
+            set('b', MenuRegistry.BACK) { back?.accept(player) }
 
             onClick { event, flag ->
                 when (event.virtualEvent().clickType) {
                     ClickType.LEFT, ClickType.SHIFT_LEFT -> {
                         // 如果没设置, 就设置成默认值
                         if (land.getFlagValueOrNull(flag.id) == null) {
-                            land.setFlag(flag.id, flag.default)
+                            land.setFlag(flag.id, flag.default, other)
                         } else {
                             val value = land.getFlag(flag.id)
-                            land.setFlag(flag.id, !value)
+                            land.setFlag(flag.id, !value, other)
                         }
-                        openMenu(player, land, back, elements)
+                        openMenu(player, land, other, back)
                     }
                     ClickType.RIGHT, ClickType.SHIFT_RIGHT -> {
                         if (land.getFlagValueOrNull(flag.id) != null) {
-                            land.setFlag(flag.id, null)
-                            openMenu(player, land, back, elements)
+                            land.setFlag(flag.id, null, other)
+                            openMenu(player, land, other, back)
                         }
                     }
                     else -> {

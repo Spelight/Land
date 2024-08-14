@@ -2,7 +2,7 @@ package com.mcstarrysky.land.flag
 
 import com.mcstarrysky.land.data.Land
 import com.mcstarrysky.land.util.display
-import org.bukkit.entity.Player
+import org.bukkit.OfflinePlayer
 import org.bukkit.inventory.ItemStack
 
 /**
@@ -50,14 +50,14 @@ interface Permission {
     /**
      * 构建界面物品
      */
-    fun generateMenuItem(land: Land, player: Player? = null): ItemStack
+    fun generateMenuItem(land: Land, player: OfflinePlayer? = null): ItemStack
 
     /**
      * 适用于构建界面物品
      * Player == null -> 该领地的该权限节点的权限设置情况
      * Player != null -> 玩家在该领地的该权限节点的权限设置情况
      */
-    fun flagValue(land: Land, user: Player? = null): String {
+    fun flagValue(land: Land, user: OfflinePlayer? = null): String {
         if (user != null) {
             return land.users[user.uniqueId]?.get(id).display
         }

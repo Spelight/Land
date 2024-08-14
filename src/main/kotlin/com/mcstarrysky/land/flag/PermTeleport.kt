@@ -3,6 +3,7 @@ package com.mcstarrysky.land.flag
 import com.mcstarrysky.land.data.Land
 import com.mcstarrysky.land.util.prettyInfo
 import com.mcstarrysky.land.util.registerPermission
+import org.bukkit.OfflinePlayer
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
 import taboolib.common.LifeCycle
@@ -33,7 +34,7 @@ object PermTeleport : Permission {
     override val playerSide: Boolean
         get() = true
 
-    override fun generateMenuItem(land: Land, player: Player?): ItemStack {
+    override fun generateMenuItem(land: Land, player: OfflinePlayer?): ItemStack {
         return buildItem(XMaterial.ENDER_PEARL) {
             name = "&f传送 ${flagValue(land, player)}"
             lore += listOf(

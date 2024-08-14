@@ -4,7 +4,7 @@ import com.mcstarrysky.land.data.Land
 import com.mcstarrysky.land.manager.LandManager
 import com.mcstarrysky.land.util.prettyInfo
 import com.mcstarrysky.land.util.registerPermission
-import org.bukkit.entity.Player
+import org.bukkit.OfflinePlayer
 import org.bukkit.event.player.PlayerTeleportEvent
 import org.bukkit.inventory.ItemFlag
 import org.bukkit.inventory.ItemStack
@@ -39,7 +39,7 @@ object PermTeleportIn : Permission {
     override val playerSide: Boolean
         get() = true
 
-    override fun generateMenuItem(land: Land, player: Player?): ItemStack {
+    override fun generateMenuItem(land: Land, player: OfflinePlayer?): ItemStack {
         return buildItem(XMaterial.DIAMOND_BOOTS) {
             name = "&f传送进来 ${flagValue(land, player)}"
             lore += listOf(

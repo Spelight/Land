@@ -4,7 +4,7 @@ import com.mcstarrysky.land.data.Land
 import com.mcstarrysky.land.manager.LandManager
 import com.mcstarrysky.land.util.prettyInfo
 import com.mcstarrysky.land.util.registerPermission
-import org.bukkit.entity.Player
+import org.bukkit.OfflinePlayer
 import org.bukkit.event.player.PlayerBucketEmptyEvent
 import org.bukkit.event.player.PlayerBucketFillEvent
 import org.bukkit.inventory.ItemStack
@@ -40,7 +40,7 @@ object PermBucket : Permission {
     override val playerSide: Boolean
         get() = true
 
-    override fun generateMenuItem(land: Land, player: Player?): ItemStack {
+    override fun generateMenuItem(land: Land, player: OfflinePlayer?): ItemStack {
         return buildItem(XMaterial.BUCKET) {
             name = "&f使用桶 ${flagValue(land, player)}"
             lore += listOf(

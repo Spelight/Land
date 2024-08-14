@@ -9,6 +9,7 @@ import com.mcstarrysky.land.util.skull
 import org.bukkit.Bukkit
 import org.bukkit.OfflinePlayer
 import org.bukkit.entity.Player
+import org.bukkit.event.inventory.ClickType
 import taboolib.common.util.sync
 import taboolib.library.xseries.XMaterial
 import taboolib.module.ui.openMenu
@@ -24,11 +25,12 @@ import java.util.function.Consumer
  * @author mical
  * @since 2024/8/3 16:45
  */
-object LandCooperatorsMenu {
+object LandPlayerPermsMenu {
 
-    fun openMenu(player: Player, land: Land, back: Consumer<Player>?, elements: List<Land>) {
-        player.openMenu<PageableChest<OfflinePlayer>>("领地(ID:${land.id}) ${land.name} 合作者") {
-            virtualize()
+    // 为什么要设计那个 elements 参数当返回? 什么脑回路
+    fun openMenu(player: Player, land: Land, back: Consumer<Player>?) {//, elements: List<Land>) {
+        player.openMenu<PageableChest<OfflinePlayer>>("玩家权限管理") {
+            // virtualize()
 
             map(
                 "b===+==pn",
@@ -38,26 +40,37 @@ object LandCooperatorsMenu {
 
             slotsBy('#')
 
-            elements { land.cooperators.map { Bukkit.getOfflinePlayer(it) } }
+            elements { land.users.keys.map { Bukkit.getOfflinePlayer(it) } }
 
             markHeader()
             markPageButton()
 
-            set('b', MenuRegistry.BACK) { LandInfoMenu.openMenu(player, land, back, elements) }
+            set('b', MenuRegistry.BACK) { back?.accept(player) }
 
             onGenerate(async = true) { _, p, _, _ ->
                 buildItem(XMaterial.PLAYER_HEAD) {
                     name = "&f" + p.name
                     lore += listOf(
-                        "&e单击删除"
+                        "&e左击删除, 右击管理权限"
                     )
                     colored()
                 }.skull(p.name)
             }
 
-            onClick { _, p ->
-                land.cooperators -= p.uniqueId
-                openMenu(player, land, back, elements)
+            onClick { e, p ->
+                when (e.clickEvent().click) {
+                    ClickType.LEFT, ClickType.SHIFT_LEFT -> {
+                        land.users -= p.uniqueId
+                        openMenu(player, land, back)
+                    }
+                    ClickType.RIGHT, ClickType.SHIFT_RIGHT -> {
+                        LandFlagsMenu.openMenu(player, land, p) {
+                            openMenu(player, land, back)
+                        }
+                    }
+                    else -> {
+                    }
+                }
             }
 
             set('+', buildItem(XMaterial.NAME_TAG) {
@@ -78,9 +91,18 @@ object LandCooperatorsMenu {
                         clicker.prettyInfo("并没有找到这位玩家!")
                         return@nextChat
                     }
-                    land.cooperators += offlinePlayer.uniqueId
-                    clicker.prettyInfo("添加成功!")
-                    sync { openMenu(clicker, land, back, elements) }
+                    if (land.users[offlinePlayer.uniqueId] != null) {
+                        clicker.prettyInfo("已存在该玩家的信息! 将为您直接打开设置面版!")
+                    } else {
+                        land.users[offlinePlayer.uniqueId] = HashMap()
+                        clicker.prettyInfo("添加成功!")
+                    }
+                    // land.cooperators += offlinePlayer.uniqueId
+                    // 优化: 添加后直接打开对应玩家的权限配置面板, 因为玩家添加就是为了设置的, 直接打开省一步操作, 优化体验
+                    // sync { openMenu(clicker, land, back) }
+                    sync { LandFlagsMenu.openMenu(clicker, land, offlinePlayer) {
+                        openMenu(clicker, land, back)
+                    } }
                 }
             }
 
