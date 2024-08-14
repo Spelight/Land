@@ -5,7 +5,7 @@ import com.mcstarrysky.land.manager.LandManager
 import com.mcstarrysky.land.util.display
 import com.mcstarrysky.land.util.prettyInfo
 import com.mcstarrysky.land.util.registerPermission
-import org.bukkit.entity.Animals
+import org.bukkit.entity.Golem
 import org.bukkit.entity.Player
 import org.bukkit.event.entity.EntityDamageByEntityEvent
 import org.bukkit.inventory.ItemFlag
@@ -18,12 +18,12 @@ import taboolib.platform.util.buildItem
 
 /**
  * Land
- * com.mcstarrysky.land.flag.PermDamageAnimals
+ * com.mcstarrysky.land.flag.PermDamageGolem
  *
  * @author HXS
  * @since 2024/8/14 13:57
  */
-object PermDamageAnimals : Permission {
+object PermDamageGolem : Permission {
 
     @Awake(LifeCycle.ENABLE)
     private fun init() {
@@ -31,7 +31,7 @@ object PermDamageAnimals : Permission {
     }
 
     override val id: String
-        get() = "damage_animals"
+        get() = "damage_golem"
 
     override val default: Boolean
         get() = false
@@ -43,11 +43,11 @@ object PermDamageAnimals : Permission {
         get() = true
 
     override fun generateMenuItem(land: Land): ItemStack {
-        return buildItem(XMaterial.IRON_SWORD){
-            name = "&f攻击动物 ${land.getFlagOrNull(id).display}"
+        return buildItem(XMaterial.STONE_SWORD){
+            name = "&f攻击傀儡 ${land.getFlagOrNull(id).display}"
             lore += listOf(
                 "&7允许行为:",
-                "&8对动物 (Animals) 造成伤害",
+                "&8对傀儡 (Golem) 造成伤害",
                 "",
                 "&e左键修改值, 右键取消设置"
             )
@@ -57,14 +57,14 @@ object PermDamageAnimals : Permission {
         }
     }
 
-    @SubscribeEvent(ignoreCancelled = true)
+    @EventHandler(ignoreCancelled = true)
     fun e(e: EntityDamageByEntityEvent) {
-        if (e.entity is Animals) {
+        if (e.entity is Golem) {
             val player = e.damager as? Player ?: return
             LandManager.getLand(e.entity.location)?.run {
-                if (!hasPermission(player) && !getFlag(this@PermDamageAnimals.id)) {
+                if (!hasPermission(player) && !getFlag(this@PermDamageGolem.id)) {
                     e.isCancelled = true
-                    player.prettyInfo("没有权限, 禁止攻击动物&7\\(标记: ${this@PermDamageAnimals.id}\\)")
+                    player.prettyInfo("没有权限, 禁止攻击傀儡&7\\(标记: ${this@PermDamageGolem.id}\\)")
                 }
             }
         }
