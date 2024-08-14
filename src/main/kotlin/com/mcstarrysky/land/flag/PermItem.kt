@@ -5,8 +5,9 @@ import com.mcstarrysky.land.manager.LandManager
 import com.mcstarrysky.land.util.prettyInfo
 import com.mcstarrysky.land.util.registerPermission
 import org.bukkit.OfflinePlayer
-import org.bukkit.entity.Villager
-import org.bukkit.event.player.PlayerInteractAtEntityEvent
+import org.bukkit.entity.Player
+import org.bukkit.event.entity.EntityPickupItemEvent
+import org.bukkit.event.player.PlayerDropItemEvent
 import org.bukkit.inventory.ItemFlag
 import org.bukkit.inventory.ItemStack
 import taboolib.common.LifeCycle
@@ -15,14 +16,15 @@ import taboolib.common.platform.event.SubscribeEvent
 import taboolib.library.xseries.XMaterial
 import taboolib.platform.util.buildItem
 
+
 /**
  * Land
- * com.mcstarrysky.land.flag.PermTrade
+ * com.mcstarrysky.land.flag.PermItem
  *
  * @author HXS
- * @since 2024/8/14 14:57
+ * @since 2024/8/14 16:43
  */
-object PermTrade : Permission {
+object PermItem : Permission {
 
     @Awake(LifeCycle.ENABLE)
     private fun init() {
@@ -30,10 +32,10 @@ object PermTrade : Permission {
     }
 
     override val id: String
-        get() = "trade"
+        get() = "item"
 
     override val default: Boolean
-        get() = false
+        get() = true
 
     override val worldSide: Boolean
         get() = true
@@ -42,11 +44,11 @@ object PermTrade : Permission {
         get() = true
 
     override fun generateMenuItem(land: Land, player: OfflinePlayer?): ItemStack {
-        return buildItem(XMaterial.EMERALD) {
-            name = "&f交易 ${flagValue(land, player)}"
+        return buildItem(XMaterial.APPLE){
+            name = "&f物品 ${flagValue(land, player)}"
             lore += listOf(
                 "&7允许行为:",
-                "&8村民交易",
+                "&8物品丢弃, 物品捡起",
                 "",
                 "&e左键修改值, 右键取消设置"
             )
@@ -57,12 +59,23 @@ object PermTrade : Permission {
     }
 
     @SubscribeEvent(ignoreCancelled = true)
-    fun e(e: PlayerInteractAtEntityEvent) {
-        if (e.rightClicked is Villager) {
-            LandManager.getLand(e.rightClicked.location)?.run {
-                if (!hasPermission(e.player, this@PermTrade)) {
+    fun e(e: PlayerDropItemEvent) {
+        LandManager.getLand(e.player.location)?.run {
+            if (!hasPermission(e.player, this@PermItem)) {
+                e.isCancelled = true
+                e.player.prettyInfo("没有权限, 禁止丢弃物品&7\\(标记: ${this@PermItem.id}\\)")
+            }
+        }
+    }
+
+    @SubscribeEvent(ignoreCancelled = true)
+    fun e(e: EntityPickupItemEvent) {
+        if (e.entity is Player) {
+            val player = e.entity as Player
+            LandManager.getLand(e.entity.location)?.run {
+                if (!hasPermission(player, this@PermItem)) {
                     e.isCancelled = true
-                    e.player.prettyInfo("没有权限, 禁止村民交易&7\\(标记: ${this@PermTrade.id}\\)")
+                    player.prettyInfo("没有权限, 禁止捡起物品&7\\(标记: ${this@PermItem.id}\\)")
                 }
             }
         }

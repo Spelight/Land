@@ -4,9 +4,9 @@ import com.mcstarrysky.land.data.Land
 import com.mcstarrysky.land.manager.LandManager
 import com.mcstarrysky.land.util.prettyInfo
 import com.mcstarrysky.land.util.registerPermission
+import org.bukkit.Material
 import org.bukkit.OfflinePlayer
-import org.bukkit.entity.Villager
-import org.bukkit.event.player.PlayerInteractAtEntityEvent
+import org.bukkit.event.player.PlayerInteractEvent
 import org.bukkit.inventory.ItemFlag
 import org.bukkit.inventory.ItemStack
 import taboolib.common.LifeCycle
@@ -17,12 +17,13 @@ import taboolib.platform.util.buildItem
 
 /**
  * Land
- * com.mcstarrysky.land.flag.PermTrade
+ * com.mcstarrysky.land.flag.PermThrow
  *
  * @author HXS
- * @since 2024/8/14 14:57
+ * @since 2024/8/14 16:51
  */
-object PermTrade : Permission {
+
+object PermThrow : Permission {
 
     @Awake(LifeCycle.ENABLE)
     private fun init() {
@@ -30,7 +31,7 @@ object PermTrade : Permission {
     }
 
     override val id: String
-        get() = "trade"
+        get() = "throw"
 
     override val default: Boolean
         get() = false
@@ -42,11 +43,11 @@ object PermTrade : Permission {
         get() = true
 
     override fun generateMenuItem(land: Land, player: OfflinePlayer?): ItemStack {
-        return buildItem(XMaterial.EMERALD) {
-            name = "&f交易 ${flagValue(land, player)}"
+        return buildItem(XMaterial.EGG){
+            name = "&f抛射物 ${flagValue(land, player)}"
             lore += listOf(
                 "&7允许行为:",
-                "&8村民交易",
+                "&8抛射鸡蛋, 抛射雪球, 扔掷三叉戟",
                 "",
                 "&e左键修改值, 右键取消设置"
             )
@@ -57,12 +58,13 @@ object PermTrade : Permission {
     }
 
     @SubscribeEvent(ignoreCancelled = true)
-    fun e(e: PlayerInteractAtEntityEvent) {
-        if (e.rightClicked is Villager) {
-            LandManager.getLand(e.rightClicked.location)?.run {
-                if (!hasPermission(e.player, this@PermTrade)) {
+    fun e(e: PlayerInteractEvent) {
+        val item = e.item ?: return
+        if (item.type == Material.SNOWBALL || item.type == Material.EGG || item.type == Material.TRIDENT){
+            LandManager.getLand(e.player.location)?.run {
+                if (!hasPermission(e.player, this@PermThrow)) {
                     e.isCancelled = true
-                    e.player.prettyInfo("没有权限, 禁止村民交易&7\\(标记: ${this@PermTrade.id}\\)")
+                    e.player.prettyInfo("没有权限, 禁止攻击投掷&7\\(标记: ${this@PermThrow.id}\\)")
                 }
             }
         }
