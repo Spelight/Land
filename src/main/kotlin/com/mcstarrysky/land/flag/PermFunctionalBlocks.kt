@@ -18,12 +18,12 @@ import taboolib.platform.util.buildItem
 
 /**
  * Land
- * com.mcstarrysky.land.flag.PermContainer
+ * com.mcstarrysky.land.flag.PermFunctionalBlocks
  *
- * @author mical
- * @since 2024/8/3 17:47
+ * @author HXS__
+ * @since 2024/8/15 23:09
  */
-object PermContainer : Permission {
+object PermFunctionalBlocks : Permission {
 
     @Awake(LifeCycle.ENABLE)
     private fun init() {
@@ -31,7 +31,7 @@ object PermContainer : Permission {
     }
 
     override val id: String
-        get() = "container"
+        get() = "functional_blocks"
 
     override val default: Boolean
         get() = false
@@ -43,11 +43,11 @@ object PermContainer : Permission {
         get() = true
 
     override fun generateMenuItem(land: Land, player: OfflinePlayer?): ItemStack {
-        return buildItem(XMaterial.CHEST) {
-            name = "&f容器 ${flagValue(land, player)}"
+        return buildItem(XMaterial.CRAFTING_TABLE) {
+            name = "&f工作方块 ${flagValue(land, player)}"
             lore += listOf(
                 "&7允许行为:",
-                "&8打开容器",
+                "&8使用工作方块",
                 "",
                 "&e左键修改值, 右键取消设置"
             )
@@ -74,12 +74,12 @@ object PermContainer : Permission {
 
     @SubscribeEvent(ignoreCancelled = true)
     fun e(e: InventoryOpenEvent) {
-        if (e.inventory.location != null && !functionalBlocks.contains(e.inventory.type)) {
+        if (e.inventory.location != null && functionalBlocks.contains(e.inventory.type)) {
             val player = e.player as? Player ?: return
             LandManager.getLand(e.inventory.location ?: return)?.run {
-                if (!hasPermission(player, this@PermContainer)) {
+                if (!hasPermission(player, this@PermFunctionalBlocks)) {
                     e.isCancelled = true
-                    player.prettyInfo("没有权限, 禁止使用容器&7\\(标记: ${this@PermContainer.id}\\)")
+                    player.prettyInfo("没有权限, 禁止使用工作方块&7\\(标记: ${this@PermFunctionalBlocks.id}\\)")
                 }
             }
         }
