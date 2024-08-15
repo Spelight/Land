@@ -48,7 +48,7 @@ object PermDamageGolem : Permission {
             name = "&f攻击傀儡 ${flagValue(land, player)}"
             lore += listOf(
                 "&7允许行为:",
-                "&8对傀儡 (Golem) 造成伤害",
+                "&8对傀儡造成伤害",
                 "",
                 "&e左键修改值, 右键取消设置"
             )

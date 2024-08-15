@@ -48,7 +48,7 @@ object PermDamageAnimals : Permission {
             name = "&f攻击动物 ${flagValue(land, player)}"
             lore += listOf(
                 "&7允许行为:",
-                "&8对动物 (Animals) 造成伤害",
+                "&8对动物造成伤害",
                 "",
                 "&e左键修改值, 右键取消设置"
             )

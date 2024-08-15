@@ -19,12 +19,12 @@ import taboolib.platform.util.buildItem
 
 /**
  * Land
- * com.mcstarrysky.land.flag.PermDamageMonster
+ * com.mcstarrysky.land.flag.PermPVP
  *
  * @author HXS
- * @since 2024/8/14 14:49
+ * @since 2024/8/15 18:49
  */
-object PermDamageMonster : Permission{
+object PermPVP : Permission{
 
     @Awake(LifeCycle.ENABLE)
     private fun init() {
@@ -32,7 +32,7 @@ object PermDamageMonster : Permission{
     }
 
     override val id: String
-        get() = "damage_monster"
+        get() = "pvp"
 
     override val default: Boolean
         get() = false
@@ -44,12 +44,12 @@ object PermDamageMonster : Permission{
         get() = true
 
         override fun generateMenuItem(land: Land, player: OfflinePlayer?): ItemStack {
-            return buildItem(XMaterial.GOLDEN_SWORD){
-                name = "&f攻击怪物 ${flagValue(land, player)}"
+            return buildItem(XMaterial.DIAMOND_SWORD){
+                name = "&攻击玩家 ${flagValue(land, player)}"
                 lore += listOf(
                 "",
                 "&7允许行为:",
-                "&8对怪物造成伤害",
+                "&8玩家之间PVP",
                 "",
                 "&e左键修改值, 右键取消设置"
             )
@@ -61,12 +61,12 @@ object PermDamageMonster : Permission{
 
     @SubscribeEvent(ignoreCancelled = true)
     fun e(e: EntityDamageByEntityEvent) {
-        if (e.entity is Monster) {
+        if (e.entity is Player) {
             val player = e.attacker as? Player ?: return
             LandManager.getLand(e.entity.location)?.run {
-                if (!hasPermission(player, this@PermDamageMonster)) {
+                if (!hasPermission(player, this@PermPVP)) {
                     e.isCancelled = true
-                    player.prettyInfo("没有权限, 禁止攻击怪物&7\\(标记: ${this@PermDamageMonster.id}\\)")
+                    player.prettyInfo("禁止PVP&7\\(标记: ${this@PermPVP.id}\\)")
                 }
             }
         }
