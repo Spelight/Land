@@ -62,6 +62,7 @@ object LandManager {
         PermBuild,
         PermContainer,
         PermEntityExplosion,
+        PermFunctionalBlocks,
         PermInteract,
         PermTeleport
     )
