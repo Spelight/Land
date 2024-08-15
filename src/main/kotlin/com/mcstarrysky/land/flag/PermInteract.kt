@@ -5,6 +5,7 @@ import com.mcstarrysky.land.manager.LandManager
 import com.mcstarrysky.land.util.prettyInfo
 import com.mcstarrysky.land.util.registerPermission
 import org.bukkit.OfflinePlayer
+import org.bukkit.block.TileState
 import org.bukkit.event.block.Action
 import org.bukkit.event.player.PlayerInteractEvent
 import org.bukkit.inventory.ItemStack
@@ -13,6 +14,7 @@ import taboolib.common.platform.Awake
 import taboolib.common.platform.event.SubscribeEvent
 import taboolib.library.xseries.XMaterial
 import taboolib.platform.util.buildItem
+import taboolib.platform.util.isRightClickBlock
 
 /**
  * Land
@@ -56,11 +58,15 @@ object PermInteract : Permission {
 
     @SubscribeEvent(ignoreCancelled = true)
     fun e(e: PlayerInteractEvent) {
-        if (e.action == Action.RIGHT_CLICK_BLOCK) {
-            LandManager.getLand(e.clickedBlock?.location ?: return)?.run {
-                if (!hasPermission(e.player, this@PermInteract)) {
-                    e.isCancelled = true
-                    e.player.prettyInfo("没有权限, 禁止接触任意物品方块&7\\(标记: ${this@PermInteract.id}\\)")
+        if (e.isRightClickBlock()) {
+            val block = e.clickedBlock ?: return
+            val itemInHand = e.player.inventory.itemInMainHand
+            if (block.state !is TileState || !itemInHand.type.isBlock) {
+                LandManager.getLand(e.clickedBlock?.location ?: return)?.run {
+                    if (!hasPermission(e.player, this@PermInteract)) {
+                        e.isCancelled = true
+                        e.player.prettyInfo("没有权限, 禁止接触任意物品方块&7\\(标记: ${this@PermInteract.id}\\)")
+                    }
                 }
             }
         }
