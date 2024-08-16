@@ -9,6 +9,12 @@ plugins {
 }
 
 taboolib {
+    description {
+        contributors {
+            name("Mical")
+            name("HXS")
+        }
+    }
     env {
         // 安装模块
         install(
