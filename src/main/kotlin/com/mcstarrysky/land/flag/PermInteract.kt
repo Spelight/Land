@@ -4,12 +4,10 @@ import com.mcstarrysky.land.data.Land
 import com.mcstarrysky.land.manager.LandManager
 import com.mcstarrysky.land.util.prettyInfo
 import com.mcstarrysky.land.util.registerPermission
+import org.bukkit.Material
 import org.bukkit.OfflinePlayer
 import org.bukkit.block.TileState
-import org.bukkit.event.block.Action
-import org.bukkit.event.inventory.InventoryType
 import org.bukkit.event.player.PlayerInteractEvent
-import org.bukkit.inventory.InventoryHolder
 import org.bukkit.inventory.ItemStack
 import taboolib.common.LifeCycle
 import taboolib.common.platform.Awake
@@ -59,18 +57,18 @@ object PermInteract : Permission {
     }
 
     private val functionalBlocks  = listOf(
-        InventoryType.WORKBENCH, // 工作台
-        InventoryType.STONECUTTER, // 切石机
-        InventoryType.CARTOGRAPHY, // 制图台
-        InventoryType.SMITHING, // 锻造台
-        InventoryType.GRINDSTONE, // 砂轮
-        InventoryType.LOOM, // 织布机
-        InventoryType.FURNACE, // 熔炉
-        InventoryType.BLAST_FURNACE, // 高炉
-        InventoryType.SMOKER, // 烟熏炉
-        InventoryType.BREWING, // 酿造台
-        InventoryType.ENCHANTING, // 附魔台
-        InventoryType.ANVIL // 铁砧
+        Material.CRAFTING_TABLE, // 工作台
+        Material.STONECUTTER, // 切石机
+        Material.CARTOGRAPHY_TABLE, // 制图台
+        Material.SMITHING_TABLE, // 锻造台
+        Material.GRINDSTONE, // 砂轮
+        Material.LOOM, // 织布机
+        Material.FURNACE, // 熔炉
+        Material.BLAST_FURNACE, // 高炉
+        Material.SMOKER, // 烟熏炉
+        Material.BREWING_STAND, // 酿造台
+        Material.ENCHANTING_TABLE, // 附魔台
+        Material.ANVIL // 铁砧
     )
 
     @SubscribeEvent(ignoreCancelled = true)
@@ -78,11 +76,8 @@ object PermInteract : Permission {
         if (e.isRightClickBlock()) {
             val block = e.clickedBlock ?: return
             // 工作方块权限跳过
-            if (block.state is InventoryHolder) {
-                val inventoryHolder = block.state as? InventoryHolder ?: return
-                if (functionalBlocks.contains(inventoryHolder.inventory.type)) {
-                    return
-                }
+            if (functionalBlocks.contains(block.type)) {
+                return
             }
             val itemInHand = e.player.inventory.itemInMainHand
             // 在方块不可交互 & 饱食度未满 & 手中物品为食物 跳过
