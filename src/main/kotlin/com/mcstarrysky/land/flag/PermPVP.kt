@@ -45,7 +45,7 @@ object PermPVP : Permission{
 
         override fun generateMenuItem(land: Land, player: OfflinePlayer?): ItemStack {
             return buildItem(XMaterial.DIAMOND_SWORD){
-                name = "&攻击玩家 ${flagValue(land, player)}"
+                name = "&f攻击玩家 ${flagValue(land, player)}"
                 lore += listOf(
                 "",
                 "&7允许行为:",
