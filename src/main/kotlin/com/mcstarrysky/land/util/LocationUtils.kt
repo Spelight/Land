@@ -1,5 +1,7 @@
 package com.mcstarrysky.land.util
 
+import com.mcstarrysky.land.data.LandChunk
+import org.bukkit.Bukkit
 import org.bukkit.Chunk
 import org.bukkit.Location
 import org.bukkit.World
@@ -20,7 +22,7 @@ object LocationUtils {
      * @return 地面上的一个位置
      * @throws IllegalArgumentException 如果区块列表为空
      */
-    fun calculateLandCenter(chunks: List<Chunk>, world: World): Location {
+    fun calculateLandCenter(chunks: List<LandChunk>, world: World): Location {
         require(chunks.isNotEmpty()) { "区块列表不能为空" }
 
         var totalX = 0.0
@@ -58,10 +60,10 @@ object LocationUtils {
      * @param chunk 区块对象
      * @return 区块中心的位置
      */
-    fun getChunkCenter(chunk: Chunk): Location {
+    fun getChunkCenter(chunk: LandChunk): Location {
         val x = (chunk.x shl 4) + 8
         val z = (chunk.z shl 4) + 8
-        return Location(chunk.world, x.toDouble(), 0.0, z.toDouble())
+        return Location(Bukkit.getWorld(chunk.world), x.toDouble(), 0.0, z.toDouble())
     }
 
     /**

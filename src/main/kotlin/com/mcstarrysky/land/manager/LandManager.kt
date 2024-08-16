@@ -19,7 +19,6 @@ import taboolib.platform.util.checkItem
 import taboolib.platform.util.takeItem
 import java.nio.charset.StandardCharsets
 import java.util.LinkedList
-import kotlin.math.ceil
 
 /**
  * Land
@@ -106,8 +105,8 @@ object LandManager {
     }
 
     fun create(player: Player, name: String) {
-        val chunk1 = PosSelection.pos1[player.uniqueId]
-        val chunk2 = PosSelection.pos2[player.uniqueId]
+        val chunk1 = PosSelection.record1[player.uniqueId]
+        val chunk2 = PosSelection.record2[player.uniqueId]
         if (chunk1 == null || chunk2 == null) {
             player.prettyInfo("你尚未选择点! 请先用领地棒选择两个点!")
             return

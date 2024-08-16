@@ -60,10 +60,6 @@ fun String.deserializeToLocation(): Location {
     return Location(Bukkit.getWorld(world), x, y, z, yaw, pitch)
 }
 
-fun Chunk.serializeToString(): String {
-    return "${world.name}~$x,$z"
-}
-
 fun String.deserializeToChunk(): Chunk {
     val (world, pos) = split("~")
     val (x, z) = pos.split(",").map { it.toInt() }

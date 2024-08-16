@@ -1,5 +1,6 @@
 package com.mcstarrysky.land
 
+import com.mcstarrysky.land.data.toLandChunk
 import com.mcstarrysky.land.manager.LandManager
 import com.mcstarrysky.land.menu.LandMainMenu
 import com.mcstarrysky.land.util.prettyInfo
@@ -79,7 +80,7 @@ object LandCommands {
         command("landdelete", permission = "admin") {
             exec<Player> {
                 val land = LandManager.getLand(sender.location) ?: return@exec
-                land.area -= sender.location.chunk
+                land.area -= sender.location.chunk.toLandChunk()
             }
         }
     }

@@ -5,7 +5,6 @@ import com.mcstarrysky.land.flag.PermAdmin
 import com.mcstarrysky.land.flag.PermTeleport
 import com.mcstarrysky.land.flag.Permission
 import com.mcstarrysky.land.manager.LandManager
-import com.mcstarrysky.land.serializers.ChunkSerializer
 import com.mcstarrysky.land.serializers.LocationSerializer
 import com.mcstarrysky.land.serializers.UUIDSerializer
 import com.mcstarrysky.land.util.*
@@ -15,7 +14,6 @@ import kotlinx.serialization.encodeToString
 import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer
 import org.bukkit.Bukkit
-import org.bukkit.Chunk
 import org.bukkit.Location
 import org.bukkit.OfflinePlayer
 import org.bukkit.entity.Player
@@ -44,7 +42,8 @@ data class Land(
     val timestamp: Long,
     val world: String,
     var description: String = "没有介绍",
-    val area: MutableList<@Serializable(with = ChunkSerializer::class) Chunk>,
+//     val area: MutableList<@Serializable(with = ChunkSerializer::class) Chunk>,
+    val area: MutableList<LandChunk>,
     var enterMessage: String? = "你进入了 &{#8abcd1}$name",
     var leaveMessage: String? = "你离开了 &{#8abcd1}$name",
     @Serializable(with = LocationSerializer::class)
@@ -70,7 +69,7 @@ data class Land(
     val date = DATE_FORMAT.format(Date(timestamp))
 
     fun isInArea(location: Location): Boolean {
-        return area.any { it == location.chunk }
+        return area.any { it.isEqualBkChunk(location.chunk) }
     }
 
     fun tryClaim(player: Player) {
@@ -89,7 +88,7 @@ data class Land(
         }
         if (player.checkItem(Land.crystal, 3)) {
             player.inventory.takeItem(3) { it.isSimilar(Land.crystal) }
-            area += location.chunk
+            area += location.chunk.toLandChunk()
             player.prettyInfo("占领区块成功!")
         } else {
             // 这里用到一个奇怪的操作
