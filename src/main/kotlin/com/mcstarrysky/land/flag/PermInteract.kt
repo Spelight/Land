@@ -68,7 +68,9 @@ object PermInteract : Permission {
         Material.SMOKER, // 烟熏炉
         Material.BREWING_STAND, // 酿造台
         Material.ENCHANTING_TABLE, // 附魔台
-        Material.ANVIL // 铁砧
+        Material.ANVIL, // 铁砧
+        Material.CHIPPED_ANVIL,// 开裂的铁砧
+        Material.DAMAGED_ANVIL// 损坏的铁砧
     )
 
     @SubscribeEvent(ignoreCancelled = true)
