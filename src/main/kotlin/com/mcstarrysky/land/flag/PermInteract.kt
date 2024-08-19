@@ -104,7 +104,7 @@ object PermInteract : Permission {
     @SubscribeEvent(ignoreCancelled = true)
     fun e(e: PlayerInteractEntityEvent) {
         if (e.rightClicked is ItemFrame) {
-            LandManager.getLand(e.player.location ?: return)?.run {
+            LandManager.getLand(e.player.location)?.run {
                 if (!hasPermission(e.player, this@PermInteract)) {
                     e.isCancelled = true
                     e.player.prettyInfo("没有权限, 禁止接触任意物品方块&7\\(标记: ${this@PermInteract.id}\\)")
@@ -117,7 +117,7 @@ object PermInteract : Permission {
     fun e(e: EntityDamageByEntityEvent) {
         val player = e.attacker as? Player ?: return
         if (e.entity is ItemFrame) {
-            LandManager.getLand(player.location ?: return)?.run {
+            LandManager.getLand(e.entity.location)?.run {
                 if (!hasPermission(player, this@PermInteract)) {
                     e.isCancelled = true
                     player.prettyInfo("没有权限, 禁止接触任意物品方块&7\\(标记: ${this@PermInteract.id}\\)")
