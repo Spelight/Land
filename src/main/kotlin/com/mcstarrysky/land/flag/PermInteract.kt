@@ -7,12 +7,18 @@ import com.mcstarrysky.land.util.registerPermission
 import org.bukkit.Material
 import org.bukkit.OfflinePlayer
 import org.bukkit.block.TileState
+import org.bukkit.entity.ItemFrame
+import org.bukkit.entity.Player
+import org.bukkit.event.entity.EntityDamageByEntityEvent
+import org.bukkit.event.player.PlayerBucketFillEvent
+import org.bukkit.event.player.PlayerInteractEntityEvent
 import org.bukkit.event.player.PlayerInteractEvent
 import org.bukkit.inventory.ItemStack
 import taboolib.common.LifeCycle
 import taboolib.common.platform.Awake
 import taboolib.common.platform.event.SubscribeEvent
 import taboolib.library.xseries.XMaterial
+import taboolib.platform.util.attacker
 import taboolib.platform.util.buildItem
 import taboolib.platform.util.isRightClickBlock
 
@@ -90,6 +96,31 @@ object PermInteract : Permission {
                 if (!hasPermission(e.player, this@PermInteract)) {
                     e.isCancelled = true
                     e.player.prettyInfo("没有权限, 禁止接触任意物品方块&7\\(标记: ${this@PermInteract.id}\\)")
+                }
+            }
+        }
+    }
+
+    @SubscribeEvent(ignoreCancelled = true)
+    fun e(e: PlayerInteractEntityEvent) {
+        if (e.rightClicked is ItemFrame) {
+            LandManager.getLand(e.player.location ?: return)?.run {
+                if (!hasPermission(e.player, this@PermInteract)) {
+                    e.isCancelled = true
+                    e.player.prettyInfo("没有权限, 禁止接触任意物品方块&7\\(标记: ${this@PermInteract.id}\\)")
+                }
+            }
+        }
+    }
+
+    @SubscribeEvent(ignoreCancelled = true)
+    fun e(e: EntityDamageByEntityEvent) {
+        val player = e.attacker as? Player ?: return
+        if (e.entity is ItemFrame) {
+            LandManager.getLand(player.location ?: return)?.run {
+                if (!hasPermission(player, this@PermInteract)) {
+                    e.isCancelled = true
+                    player.prettyInfo("没有权限, 禁止接触任意物品方块&7\\(标记: ${this@PermInteract.id}\\)")
                 }
             }
         }
