@@ -63,7 +63,8 @@ object LandManager {
         PermEntityExplosion,
         PermFunctionalBlocks,
         PermInteract,
-        PermTeleport
+        PermTeleport,
+        PermPVP
     )
 
     val lands = LinkedList<Land>()

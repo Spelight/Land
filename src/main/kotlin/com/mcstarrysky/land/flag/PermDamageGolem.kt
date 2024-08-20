@@ -44,7 +44,7 @@ object PermDamageGolem : Permission {
         get() = true
 
     override fun generateMenuItem(land: Land, player: OfflinePlayer?): ItemStack {
-        return buildItem(XMaterial.STONE_SWORD){
+        return buildItem(XMaterial.STONE_SWORD) {
             name = "&f攻击傀儡 ${flagValue(land, player)}"
             lore += listOf(
                 "&7允许行为:",

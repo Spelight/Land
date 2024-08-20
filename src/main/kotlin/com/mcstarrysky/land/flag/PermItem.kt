@@ -16,7 +16,6 @@ import taboolib.common.platform.event.SubscribeEvent
 import taboolib.library.xseries.XMaterial
 import taboolib.platform.util.buildItem
 
-
 /**
  * Land
  * com.mcstarrysky.land.flag.PermItem
@@ -44,7 +43,7 @@ object PermItem : Permission {
         get() = true
 
     override fun generateMenuItem(land: Land, player: OfflinePlayer?): ItemStack {
-        return buildItem(XMaterial.APPLE){
+        return buildItem(XMaterial.APPLE) {
             name = "&f物品 ${flagValue(land, player)}"
             lore += listOf(
                 "&7允许行为:",

@@ -42,7 +42,7 @@ object PermThrow : Permission {
         get() = true
 
     override fun generateMenuItem(land: Land, player: OfflinePlayer?): ItemStack {
-        return buildItem(XMaterial.EGG){
+        return buildItem(XMaterial.EGG) {
             name = "&f抛射物 ${flagValue(land, player)}"
             lore += listOf(
                 "&7允许行为:",
@@ -59,7 +59,7 @@ object PermThrow : Permission {
     @SubscribeEvent(ignoreCancelled = true)
     fun e(e: PlayerInteractEvent) {
         val item = e.item ?: return
-        if (item.type == Material.SNOWBALL || item.type == Material.EGG || item.type == Material.TRIDENT){
+        if (item.type == Material.SNOWBALL || item.type == Material.EGG || item.type == Material.TRIDENT) {
             LandManager.getLand(e.player.location)?.run {
                 if (!hasPermission(e.player, this@PermThrow)) {
                     e.isCancelled = true

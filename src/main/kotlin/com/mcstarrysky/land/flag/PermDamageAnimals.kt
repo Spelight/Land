@@ -44,7 +44,7 @@ object PermDamageAnimals : Permission {
         get() = true
 
     override fun generateMenuItem(land: Land, player: OfflinePlayer?): ItemStack {
-        return buildItem(XMaterial.IRON_SWORD){
+        return buildItem(XMaterial.IRON_SWORD) {
             name = "&f攻击动物 ${flagValue(land, player)}"
             lore += listOf(
                 "&7允许行为:",

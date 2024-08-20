@@ -62,7 +62,7 @@ object PermInteract : Permission {
         }
     }
 
-    private val functionalBlocks  = listOf(
+    private val functionalBlocks = listOf(
         Material.CRAFTING_TABLE, // 工作台
         Material.STONECUTTER, // 切石机
         Material.CARTOGRAPHY_TABLE, // 制图台
@@ -89,7 +89,7 @@ object PermInteract : Permission {
             }
             val itemInHand = e.player.inventory.itemInMainHand
             // 在方块不可交互 & 饱食度未满 & 手中物品为食物 跳过
-            if (block.state !is TileState && e.player.foodLevel < 20 && itemInHand.type.isEdible){
+            if (block.state !is TileState && e.player.foodLevel < 20 && itemInHand.type.isEdible) {
                 return
             }
             LandManager.getLand(e.clickedBlock?.location ?: return)?.run {

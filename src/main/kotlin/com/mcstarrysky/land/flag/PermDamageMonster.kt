@@ -24,7 +24,7 @@ import taboolib.platform.util.buildItem
  * @author HXS
  * @since 2024/8/14 14:49
  */
-object PermDamageMonster : Permission{
+object PermDamageMonster : Permission {
 
     @Awake(LifeCycle.ENABLE)
     private fun init() {
@@ -43,10 +43,10 @@ object PermDamageMonster : Permission{
     override val playerSide: Boolean
         get() = true
 
-        override fun generateMenuItem(land: Land, player: OfflinePlayer?): ItemStack {
-            return buildItem(XMaterial.GOLDEN_SWORD){
-                name = "&f攻击怪物 ${flagValue(land, player)}"
-                lore += listOf(
+    override fun generateMenuItem(land: Land, player: OfflinePlayer?): ItemStack {
+        return buildItem(XMaterial.GOLDEN_SWORD) {
+            name = "&f攻击怪物 ${flagValue(land, player)}"
+            lore += listOf(
                 "&7允许行为:",
                 "&8对怪物造成伤害",
                 "",

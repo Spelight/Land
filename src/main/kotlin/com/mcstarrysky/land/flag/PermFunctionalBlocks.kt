@@ -57,7 +57,7 @@ object PermFunctionalBlocks : Permission {
         }
     }
 
-    private val functionalBlocks  = listOf(
+    private val functionalBlocks = listOf(
         InventoryType.WORKBENCH, // 工作台
         InventoryType.STONECUTTER, // 切石机
         InventoryType.CARTOGRAPHY, // 制图台

@@ -59,7 +59,7 @@ object PermBuild : Permission {
                 "",
                 "&e左键修改值, 右键取消设置"
             )
-            
+
             flags += ItemFlag.values().toList()
             if (land.getFlagValueOrNull(id) == true) shiny()
             colored()
