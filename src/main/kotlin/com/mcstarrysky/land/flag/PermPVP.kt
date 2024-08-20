@@ -5,10 +5,8 @@ import com.mcstarrysky.land.manager.LandManager
 import com.mcstarrysky.land.util.prettyInfo
 import com.mcstarrysky.land.util.registerPermission
 import org.bukkit.OfflinePlayer
-import org.bukkit.entity.Monster
 import org.bukkit.entity.Player
 import org.bukkit.event.entity.EntityDamageByEntityEvent
-import org.bukkit.event.player.PlayerFishEvent
 import org.bukkit.inventory.ItemFlag
 import org.bukkit.inventory.ItemStack
 import taboolib.common.LifeCycle
@@ -25,7 +23,7 @@ import taboolib.platform.util.buildItem
  * @author HXS
  * @since 2024/8/15 18:49
  */
-object PermPVP : Permission{
+object PermPVP : Permission {
 
     @Awake(LifeCycle.ENABLE)
     private fun init() {
@@ -44,10 +42,10 @@ object PermPVP : Permission{
     override val playerSide: Boolean
         get() = true
 
-        override fun generateMenuItem(land: Land, player: OfflinePlayer?): ItemStack {
-            return buildItem(XMaterial.DIAMOND_SWORD){
-                name = "&f攻击玩家 ${flagValue(land, player)}"
-                lore += listOf(
+    override fun generateMenuItem(land: Land, player: OfflinePlayer?): ItemStack {
+        return buildItem(XMaterial.DIAMOND_SWORD) {
+            name = "&f攻击玩家 ${flagValue(land, player)}"
+            lore += listOf(
                 "&7允许行为:",
                 "&8玩家之间PVP",
                 "",
@@ -67,30 +65,6 @@ object PermPVP : Permission{
                 if (!hasPermission(player, this@PermPVP)) {
                     e.isCancelled = true
                     player.prettyInfo("禁止PVP&7\\(标记: ${this@PermPVP.id}\\)")
-                }
-            }
-        }
-    }
-
-    @SubscribeEvent(ignoreCancelled = true)
-    fun e(e: PlayerFishEvent) {
-        if (e.state == PlayerFishEvent.State.CAUGHT_ENTITY && e.caught is Player) {
-            val player = e.player // 钓鱼者
-            val caughtPlayer = e.caught as? Player ?: return // 被钓到的玩家
-
-            LandManager.getLand(caughtPlayer.location)?.run {
-                if (!hasPermission(caughtPlayer, this@PermPVP)) {
-                    e.isCancelled = true
-                    caughtPlayer.prettyInfo("禁止使用钓鱼竿PVP&7\\(标记: ${this@PermPVP.id}\\)")
-                    return
-                }
-            }
-
-            LandManager.getLand(player.location)?.run {
-                if (!hasPermission(player, this@PermPVP)) {
-                    e.isCancelled = true
-                    player.prettyInfo("禁止使用钓鱼竿PVP&7\\(标记: ${this@PermPVP.id}\\)")
-                    return
                 }
             }
         }
