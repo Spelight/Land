@@ -47,7 +47,6 @@ object PermDamageMonster : Permission{
             return buildItem(XMaterial.GOLDEN_SWORD){
                 name = "&f攻击怪物 ${flagValue(land, player)}"
                 lore += listOf(
-                "",
                 "&7允许行为:",
                 "&8对怪物造成伤害",
                 "",
