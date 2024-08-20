@@ -10,7 +10,6 @@ import org.bukkit.block.TileState
 import org.bukkit.entity.ItemFrame
 import org.bukkit.entity.Player
 import org.bukkit.event.entity.EntityDamageByEntityEvent
-import org.bukkit.event.player.PlayerBucketFillEvent
 import org.bukkit.event.player.PlayerInteractEntityEvent
 import org.bukkit.event.player.PlayerInteractEvent
 import org.bukkit.inventory.ItemStack
@@ -104,7 +103,7 @@ object PermInteract : Permission {
     @SubscribeEvent(ignoreCancelled = true)
     fun e(e: PlayerInteractEntityEvent) {
         if (e.rightClicked is ItemFrame) {
-            LandManager.getLand(e.player.location)?.run {
+            LandManager.getLand(e.rightClicked.location)?.run {
                 if (!hasPermission(e.player, this@PermInteract)) {
                     e.isCancelled = true
                     e.player.prettyInfo("没有权限, 禁止接触任意物品方块&7\\(标记: ${this@PermInteract.id}\\)")
