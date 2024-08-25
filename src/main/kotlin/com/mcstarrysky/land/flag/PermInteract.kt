@@ -78,6 +78,19 @@ object PermInteract : Permission {
         Material.DAMAGED_ANVIL// 损坏的铁砧
     )
 
+    // 交通工具的list
+    private val vehicle = listOf(
+        Material.BIRCH_BOAT,
+        Material.OAK_BOAT,
+        Material.ACACIA_BOAT,
+        Material.SPRUCE_BOAT,
+        Material.JUNGLE_BOAT,
+        Material.DARK_OAK_BOAT,
+        Material.MANGROVE_BOAT,
+        Material.CHERRY_BOAT,
+        Material.MINECART,
+    )
+
     @SubscribeEvent(ignoreCancelled = true)
     fun e(e: PlayerInteractEvent) {
         if (e.isRightClickBlock()) {
@@ -89,6 +102,10 @@ object PermInteract : Permission {
             val itemInHand = e.player.inventory.itemInMainHand
             // 在方块不可交互 & 饱食度未满 & 手中物品为食物 跳过
             if (block.state !is TileState && e.player.foodLevel < 20 && itemInHand.type.isEdible) {
+                return
+            }
+            //  在方块不可交互 & 手中的是交通工具 跳过
+            if (block.state !is TileState && vehicle.contains(itemInHand.type)) {
                 return
             }
             LandManager.getLand(e.clickedBlock?.location ?: return)?.run {
