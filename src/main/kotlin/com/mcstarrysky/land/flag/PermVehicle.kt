@@ -90,7 +90,7 @@ object PermVehicle : Permission {
     fun e(e: VehicleDestroyEvent) {
         if (e.attacker is Player) {
             val player = e.attacker as Player
-            LandManager.getLand(e.vehicle.location ?: return)?.run {
+            LandManager.getLand(e.vehicle.location)?.run {
                 if (!hasPermission(player, this@PermVehicle)) {
                     e.isCancelled = true
                     player.prettyInfo("没有权限, 禁止破坏交通工具&7\\(标记: ${this@PermVehicle.id}\\)")
