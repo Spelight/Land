@@ -27,9 +27,10 @@ taboolib {
             "bukkit-ui",
             "platform-bukkit"
         )
+        forceDownloadInDev = false
         repoTabooLib = "http://mcstarrysky.com:8081/repository/releases/"
     }
-    version { taboolib = "6.2.0-beta5-dev" }
+    version { taboolib = "6.2.0-beta20-dev" }
 }
 
 repositories {
