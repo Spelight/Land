@@ -28,7 +28,7 @@ taboolib {
             "platform-bukkit"
         )
         forceDownloadInDev = false
-        repoTabooLib = "http://mcstarrysky.com:8081/repository/releases/"
+        repoTabooLib = "http://ptms.ink:8081/repository/releases"
     }
     version { taboolib = "6.2.0-beta20-dev" }
 }
