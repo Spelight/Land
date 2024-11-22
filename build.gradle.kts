@@ -34,7 +34,7 @@ taboolib {
 }
 
 repositories {
-    maven("http://mcstarrysky.com:8081/repository/releases/") {
+    maven("http://ptms.ink:8081/repository/releases") {
         isAllowInsecureProtocol = true
     }
     mavenCentral()
